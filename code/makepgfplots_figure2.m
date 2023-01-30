@@ -1,3 +1,6 @@
+%% Plot of maximal difference betw. Taylor/Chebushev and smapled eigenvalues
+% this file produces a tex-file that is directly inserted in the paper
+
 if (usevpa)||(usesingle)
 	filename = sprintf('exp_pap_fig52_%d_%d_%f_%d_vpa.tex',n,md,t0,example);
 else		
@@ -210,15 +213,15 @@ fprintf(figout,'\\endpgfgraphicnamed%%\n');
 
 if (usevpa)||(usesingle)
 	if (taylor)
-		fprintf(figout,'\\caption{Example~\ref{example:%d}---Maximal difference between Taylor approximations and eigenvalues using single precision to store $E$, $\\mu_{0}=%3.2f$.}%%\n',example,t0);
+		fprintf(figout,'\\caption{Example~\\ref{example:%d}---Maximal difference between Taylor approximations and eigenvalues using single precision to store $E$, $\\mu_{0}=%3.2f$.}%%\n',example,t0);
 	else
-		fprintf(figout,'\\caption{Example~\ref{example:%d}---Maximal difference between Chebyshev	approximations and eigenvalues using single precision to store $E$, $[\\mu_{1},\\mu_{2}] = [%3.2f,%3.2f]$.}%%\n',example,T2(1),T2(2));
+		fprintf(figout,'\\caption{Example~\\ref{example:%d}---Maximal difference between Chebyshev	approximations and eigenvalues using single precision to store $E$, $[\\mu_{1},\\mu_{2}] = [%3.2f,%3.2f]$.}%%\n',example,T2(1),T2(2));
 	end
 else
 	if (taylor)
-		fprintf(figout,'\\caption{Example~\ref{example:%d}---Maximal difference between Taylor approximations and eigenvalues, $\\mu_{0}=%3.2f$.}%%\n',example,t0);
+		fprintf(figout,'\\caption{Example~\\ref{example:%d}---Maximal difference between Taylor approximations and eigenvalues, $\\mu_{0}=%3.2f$.}%%\n',example,t0);
 	else
-		fprintf(figout,'\\caption{Example~\ref{example:%d}---Maximal difference between Chebyshev approximations and eigenvalues, $[\\mu_{1},\\mu_{2}] = [%3.2f,%3.2f]$.}%%\n',example,T2(1),T2(2));
+		fprintf(figout,'\\caption{Example~\\ref{example:%d}---Maximal difference between Chebyshev approximations and eigenvalues, $[\\mu_{1},\\mu_{2}] = [%3.2f,%3.2f]$.}%%\n',example,T2(1),T2(2));
 	end
 end
 if (taylor)

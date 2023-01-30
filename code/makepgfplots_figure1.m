@@ -1,5 +1,5 @@
 %% Plot of sampled eigenvalues and Taylor/Chebushev approximation
-
+% this file produces a tex-file that is directly inserted in the paper
 
 if (taylor)
 	

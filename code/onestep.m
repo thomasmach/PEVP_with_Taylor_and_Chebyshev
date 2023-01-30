@@ -1,8 +1,28 @@
-function [z] = onestep(A,z,n,kk)
+function [z] = onestep(A,z)%,n,kk)
+%% one Newton step to improve the Chebyshev expansion of all eigenvalues
+% this solves (3.4)
 
+% INPUT
+% 
+% A ............ matrix A(mu) given by Chebyshev coefficients
+%
+% z ............ tensor with the coefficients in Chebyshev basis of the
+%                eigenvalues and eigenvectors (iteratively improved as output)
+%
+% OUTPUT
+%
+% z ........... tensor with the coefficients in Chebyshev basis of the
+%               eigenvalues and eigenvectors
+%
 
+% initialization
+[m,n,o]=size(A);
+assert(m==n)
 np1 = n+1;
-nn = np1*kk;
+[l,ni]=size(z);
+nn = np1*o;
+assert(l==nn);
+
 
 
 for ni = 1:n
@@ -12,7 +32,7 @@ for ni = 1:n
 	
 	in = 2:np1;
 
-	for ii = 1:kk
+	for ii = 1:o
 		
 		for ln = ii:-1:1
 			
