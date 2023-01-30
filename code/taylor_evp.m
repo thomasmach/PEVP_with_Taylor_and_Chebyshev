@@ -1,18 +1,32 @@
-function [dp,vp] = taylor_evp(A,md,mdA,usesingle)
+function [dp,vp] = taylor_evp(A,md,mdA,usesingle,ind_eigenv)
 %% Taylor approximation 
 % INPUT
 % 
-% A ......... matrix A(mu) given by Taylor coefficients 
+% A ........... matrix A(mu) given by Taylor coefficients 
 %
-% md ........ degree of the approximation + 1
+% md .......... degree of the approximation + 1
 %
-% mdA ....... (optional) degree of the approximation of A 
+% mdA ......... (optional) degree of the approximation of A 
+%
+% usesingle ... (optional) if true, then matrix E gets rounded to single precision
+%
+% ind_eigenv .. (optional) if set only the eigenvalues (sorted by absolute
+%                          value) corresponding to the indizes listed in 
+%                          this vector are computed
 %
 % OUTPUT
 %
-% dp ........ matrix with the coefficients in Chebyshev basis of the eigenvalues
-% vp ........ tensor with the coefficients in Chebyshev basis of the eigenvectors
+% dp ........ matrix with the Taylor coefficients of the eigenvalues
+% vp ........ tensor with the Taylor coefficients of the eigenvectors
 %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% initialization
+[m,n,o]=size(A);
+% check size of A
+assert(mdA==o);
+assert(m==n);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% optional parameters
@@ -24,50 +38,62 @@ end
 if (~exist('usesingle','var'))
 	usesingle = false;
 end
-
-
-[m,n,o]=size(A);
-% check size of A
-assert(mdA==o);
-assert(m==n);
-% compute the dominant len eigenvalues
-if (~exist('len','var'))
-	len = n;
+% set ind_eigenv if not set
+if (~exist('ind_eigenv','var'))
+	ind_eigenv = 1:n;
+	len = length(ind_eigenv)
 end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % simultaneous solution for all eigenpairs 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% prepare storange dp, vp, and xp
+vp = zeros(n,len,md);
+dp = zeros(len,md);
+xp = zeros(n+1,len,md);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 0th approximation
-%[V,D0] = eigs(A(:,:,1),len,'largestreal');
-[V,D0] = eig(A(:,:,1));
+[U,T] = eig(A(:,:,1));
+[V,D0] = eig(T);
+% if A is sparse and only some eigenpairs are of
+% interested use for instance 
+% [V,D0] = eigs(A(:,:,1),len,'largestreal');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% copy 0th approximation 
 d0 = diag(D0);
-[~,ind] = sort(d0,'descend');
+[~,ind] = sort(abs(d0),'descend');
 
-vp = zeros(n,len,md);
-dp = zeros(len,md);
-vp(:,:,1) = V(:,ind(1:len));
-dp(:,1) = d0(ind(1:len));
-xp = zeros(n+1,len,md);
+W = U*V;
+vp(:,:,1) = W(:,ind(ind_eigenv));
+dp(:,1) = d0(ind(ind_eigenv));
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % we solve the lower triangular system by
 % forward substitution
 for ii = 1:len
-	% ii
-	F = [0, ctranspose(vp(:,ii,1)); vp(:,ii,1), dp(ii,1)*eye(n)-A(:,:,1)];
+
+	% compute ei = U' v_0
+	ei = zeros(n,1); ei(ind(ind_eigenv(ii)))=1;
+
+	% old E
+	% code lines using the old F are still available as comment
+	% F = [0, ctranspose(vp(:,ii,1)); vp(:,ii,1), dp(ii,1)*eye(n)-A(:,:,1)];
+
+	% new highly efficient E
+	E = [0, ctranspose(ei); ei, dp(ii,1)*eye(n)-T];
 
  	if (usesingle)
-		F = single(F);
+		%F = single(F);
+		E = single(E);
 	end
 	
-	invF = pinv(F);
+	%invF = pinv(F);
 	
+	% compute right hand side of (2.5)
 	for kk = 2:md
 		yp = zeros(n,1);
 		lp = zeros(1,1);
@@ -81,10 +107,16 @@ for ii = 1:len
 			end
 		end
 		
+		% solve (2.5)
 
-		xp(:,ii,kk) = invF*[-lp/2;yp];
+		%xp(:,ii,kk) = invF*[-lp/2;yp];
+		%dp(ii,kk) = xp(1,ii,kk);
+		%vp(:,ii,kk) = xp(2:end,ii,kk);
+		
+		% solve (2.5) using a reformulation based on (2.6)
+		xp(:,ii,kk) = E\[-lp/2;U'*yp];
 		dp(ii,kk) = xp(1,ii,kk);
-		vp(:,ii,kk) = xp(2:end,ii,kk);
+		vp(:,ii,kk) = U*xp(2:end,ii,kk);
 		
 	end
 	

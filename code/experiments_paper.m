@@ -34,6 +34,8 @@ switch selector
 	case {1}
 		% proof-of-concept Taylor and Table sum to 8
 		floats = [1,2];
+		% Fig 2.1
+		% Table 2.1
 
 		n = 8;
 		md = 7;
@@ -712,8 +714,16 @@ end
 
 
 
+if (selector == 2)
+		
+	p = 5
+	h = sum(dp(:,p+1))
+	p = 10
+	h = sum(dp(:,p+1))
+	p = 15
+	h = sum(dp(:,p+1))
 
-
+end
 
 
 
