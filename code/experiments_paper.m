@@ -10,6 +10,17 @@ addpath('~/git/chebfun')
 if (~exist('selector','var'))
 	selector = 1;
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table Selector
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% selector   floats            filenames    method
+% 1          Fig 2.1           fig41        Taylor
+%            Table 2.1         tab41        Taylor
+% 2          Fig 2.2           fig52        Taylor
+% 3          Fig 2.3           fig53        Taylor
+% 4          Fig 3.1           fig52_cheb   Chebyshev
+
+
 usevpa = false;
 
 % parameter interval (Chebyshev approximation)
@@ -27,15 +38,11 @@ T2 = [1/4,1];
 % 8  like 6 but Chebyshev
 % 9  like 1 but example 3 mu = -0.2
 % 10 like 1 but example 3 mu = 0.2
-%
-%
 
 switch selector
 	case {1}
 		% proof-of-concept Taylor and Table sum to 8
 		floats = [1,2];
-		% Fig 2.1
-		% Table 2.1
 
 		n = 8;
 		md = 7;
