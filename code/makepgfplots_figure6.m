@@ -1,37 +1,26 @@
-%% Plot of sampled eigenvalues and Taylor/Chebushev approximation
+%% Plot of sampled eigenvalues and Taylor (blue) and Chebushev (orange) (both) approximation
 % this file produces a tex-file that is directly inserted in the paper
 
-if (taylor)
-	
-	if (usevpa)
-		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d_vpa.tex',n,md,t0,example);
-	else
-		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d.tex',n,md,t0,example);
-	end
 
+if (usevpa)
+	filename = sprintf('exp_pap_figure41_both_%d_%d_%f_%d_vpa.tex',n,md,t0,example);
 else
-	
-	if (usevpa)
-		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d_vpa.tex',n,md,T2(1),T2(2),example);
-	else
-		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d.tex',n,md,T2(1),T2(2),example);
-	end
-	
+	filename = sprintf('exp_pap_figure41_both_%d_%d_%f_%d.tex',n,md,t0,example);
 end
+
+
 figout = fopen(filename,'w');
 
 
-if (~taylor)
 
-	fp{1} = @(mu) dp(:,1)*Usch{1}(mu);
-	fvp{1} = @(mu) vp(:,:,1)*Usch{1}(mu);
+fp{1} = @(mu) dpc(:,1)*Usch{1}(mu);
+fvp{1} = @(mu) vpc(:,:,1)*Usch{1}(mu);
 
-	for kk = 2:md
-		fp{kk} = @(mu) fp{kk-1}(mu) + dp(:,kk)*Usch{kk}(mu);
-		fvp{kk} = @(mu) fvp{kk-1}(mu) + vp(:,:,kk)*Usch{kk}(mu);
-	end
-
+for kk = 2:md
+	fp{kk} = @(mu) fp{kk-1}(mu) + dpc(:,kk)*Usch{kk}(mu);
+	fvp{kk} = @(mu) fvp{kk-1}(mu) + vpc(:,:,kk)*Usch{kk}(mu);
 end
+
 
 	
 fprintf(figout,'\\begin{figure}\n');
@@ -90,27 +79,36 @@ fprintf(figout,'    };\n\n');
 
 
 for ii=1:n
+
+	% Taylor
 	fprintf(figout,'    \\addplot[SPECblue, thick]\n');
 	fprintf(figout,'    coordinates{%%\n');
 	el = zeros(1,n); 
 	el(ii) = 1;
 	for kk = 1:npoints
-		if (taylor)
-			hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
-			if ((hhorn<=80) && (hhorn>=-10))
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),hhorn);
-			end
-			
-		else
-			hfp = el*fp{md}(xl(kk));
-			if ((hfp<=80) && (hfp>=-10))
-
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),hfp);
-			end
-			
+		hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
+		if ((hhorn<=80) && (hhorn>=-10))
+			fprintf(figout,'    (%e,%e)%%\n',xl(kk),hhorn);
 		end
+		
 	end			
 	fprintf(figout,'    };\n\n');	
+
+	% Chebyshev
+	fprintf(figout,'    \\addplot[SPECorange, thick]\n');
+	fprintf(figout,'    coordinates{%%\n');
+	el = zeros(1,n); 
+	el(ii) = 1;
+	for kk = 1:npoints
+		hfp = el*fp{md}(xl(kk));
+		if ((hfp<=80) && (hfp>=-10))
+			
+			fprintf(figout,'    (%e,%e)%%\n',xl(kk),hfp);
+		end
+		
+	end			
+	fprintf(figout,'    };\n\n');	
+
 end
 
 if (S ~= [42,42,42,42])
@@ -122,11 +120,8 @@ if (S ~= [42,42,42,42])
 	fprintf(figout,'\n\n');		
 end
 
-if (taylor)
-	fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation}%%\n',md-1);    
-else
-	fprintf(figout,'    \\legend{Eigenvalues, %dth Chebyshev approximation}%%\n',md-1);    
-end	
+fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation, %dth Chebyshev approximation}%%\n',md-1,md-1);    
+
 
 fprintf(figout,'	\\end{axis}%%\n');
 

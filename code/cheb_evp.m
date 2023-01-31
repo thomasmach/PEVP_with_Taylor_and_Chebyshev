@@ -29,6 +29,7 @@ function [dp,vp] = cheb_evp(A,md,newtonsteps,mdA,usesingle)
 assert(mdA==o);
 assert(m==n);
 
+fprintf('here\n')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% optional parameters
@@ -63,7 +64,7 @@ z = zeros((n+1)*md,len);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 0th approximation
-[U,T] = eig(A(:,:,1));
+[U,T] = schur(A(:,:,1));
 [V,D0] = eig(T);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,8 +111,9 @@ for ii = ind_eigenv
 		% prepare linear system and it's inverse
 		if (kk==2)
 			% compute ei = U' v_0
-			ei = zeros(n,1); ei(ind(ind_eigenv(ii)))=1;
-
+			% ei = zeros(n,1); ei(ind(ind_eigenv(ii)))=1;
+			ei = U'*vp(:,ii,1);
+			
 			% old E
 			% code lines using the old F are still available as comment
 			%F = [0 ctranspose(z(2:(n+1),ii)); z(2:(n+1),ii)  z(1,ii)*eye(n)-A(:,:,1)];

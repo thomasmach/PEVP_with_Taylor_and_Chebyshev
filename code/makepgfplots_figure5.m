@@ -43,17 +43,107 @@ fprintf(figout,'  \\begin{axis}[ %%\n');
 fprintf(figout,'    remember picture, %%\n');
 fprintf(figout,'    name = plot1a, %%\n');
 fprintf(figout,'    scale only axis, %%\n');
+fprintf(figout,'    xticklabel pos=right, %%\n');
 %fprintf(figout,'    clip mode = individual,%%\n');
 %fprintf(figout,'    set layers=axis on top,%%\n');
 fprintf(figout,'    scaled y ticks = false,%%\n');
 fprintf(figout,'    width=0.75\\textwidth,%%\n');
-fprintf(figout,'    height=0.22067\\textheight,%%\n');
+%fprintf(figout,'    height=0.22067\\textheight,%%\n');
+fprintf(figout,'    height=0.11\\textheight,%%\n');
 fprintf(figout,'    xmin = %e, xmax = %e, %% change if needed\n', T(1), T(2));
-fprintf(figout,'    ymin = %e, ymax = %e, %%\n', 0, n);
+fprintf(figout,'    ymin = %e, ymax = %e, %%\n', -0.5, 4.5);
 fprintf(figout,'    restrict x to domain=%d:%d, %%\n', floor(T(1))-2, ceil(T(2))+2);
-fprintf(figout,'    restrict y to domain=%d:%d, %%\n',-2,n+2);
+fprintf(figout,'    restrict y to domain=%d:%d, %%\n',-20,20);
 fprintf(figout,'    xlabel = {$\\mu$},%%\n');
-fprintf(figout,'    ylabel = {Eigenvalues},%%\n');
+fprintf(figout,'    ylabel = {real$(\\lambda(\\mu))$},%%\n');
+fprintf(figout,'    scaled ticks = false,%%\n');
+fprintf(figout,'    every axis y label/.style= {at={(ticklabel cs:0.5)},rotate=90,yshift=3pt},%%\n');
+fprintf(figout,'    axis on top, %%\n');
+fprintf(figout,'    every axis legend/.append style={ at={(0.02,0.975)}, anchor=north west,\n');
+fprintf(figout,'      cells={anchor=west}, },%%\n');
+fprintf(figout,'    mark size = 2]\n\n');
+fprintf(figout,'	  \\addplot[SPECred, only marks, mark=+]\n');
+fprintf(figout,'    coordinates{%%\n');      
+
+
+for kk = 1:npoints
+	xx = xl(kk);
+	
+	switch (example)
+		case {1,111}
+			Ax(:,:) = exp(-xx*U);
+			
+		case {2,112}
+			Ax(:,:) = diag([ones(floor(n/2),1);(1/xx)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
+			
+		case {3,113}
+			Ax(:,:) = diag(ones(n,1),0) + diag(ones(n-1,1),1);
+			Ax(n,1) = xx;
+			
+	end
+	
+	e = eig(Ax);
+	%plot(xx*ones(n,1),e,'r+');
+	for ii=1:n
+		fprintf(figout,'    (%e,%e)%%\n',xx,real(e(ii)));
+	end
+		
+end
+fprintf(figout,'    };\n\n');	
+
+
+for ii=1:n
+	fprintf(figout,'    \\addplot[SPECblue, thick]\n');
+	fprintf(figout,'    coordinates{%%\n');
+	el = zeros(1,n); 
+	el(ii) = 1;
+	for kk = 1:npoints
+		if (taylor)
+			hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
+			if ((hhorn<=80) && (hhorn>=-10))
+				fprintf(figout,'    (%e,%e)%%\n',xl(kk),real(hhorn));
+			end
+			
+		else
+			hfp = el*fp{md}(xl(kk));
+			if ((hfp<=80) && (hfp>=-10))
+
+				fprintf(figout,'    (%e,%e)%%\n',xl(kk),real(hfp));
+			end
+			
+		end
+	end			
+	fprintf(figout,'    };\n\n');	
+end
+
+if (taylor)
+	fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation}%%\n',md-1);    
+else
+	fprintf(figout,'    \\legend{Eigenvalues, %dth Chebyshev approximation}%%\n',md-1);    
+end	
+
+fprintf(figout,'	\\end{axis}%%\n');
+
+
+fprintf(figout,'  \\begin{axis}[ %%\n');
+fprintf(figout,'    at ={($(plot1a.south)+(0,3pt)$)}, %%\n');
+fprintf(figout,'    anchor = north, %%\n');
+fprintf(figout,'    remember picture, %%\n');
+fprintf(figout,'    name = plot1b, %%\n');
+fprintf(figout,'    scale only axis, %%\n');
+%fprintf(figout,'    clip mode = individual,%%\n');
+%fprintf(figout,'    set layers=axis on top,%%\n');
+fprintf(figout,'    scaled y ticks = false,%%\n');
+fprintf(figout,'    width=0.75\\textwidth,%%\n');
+%fprintf(figout,'    height=0.22067\\textheight,%%\n');
+fprintf(figout,'    height=0.11\\textheight,%%\n');
+fprintf(figout,'    xmin = %e, xmax = %e, %% change if needed\n', T(1), T(2));
+fprintf(figout,'    ymin = %e, ymax = %e, %%\n', -1.75, 1.75);
+fprintf(figout,'    restrict x to domain=%d:%d, %%\n', floor(T(1))-2, ceil(T(2))+2);
+fprintf(figout,'    restrict y to domain=%d:%d, %%\n',-20,20);
+fprintf(figout,'    xlabel = {$\\mu$},%%\n');
+%fprintf(figout,'    ylabel = {imag(Eigenvalues)},%%\n');
+fprintf(figout,'    ylabel = {imag$(\\lambda(\\mu))$},%%\n');
 fprintf(figout,'    scaled ticks = false,%%\n');
 fprintf(figout,'    every axis y label/.style= {at={(ticklabel cs:0.5)},rotate=90,yshift=3pt},%%\n');
 fprintf(figout,'    axis on top, %%\n');
@@ -83,7 +173,7 @@ for kk = 1:npoints
 	e = eig(Ax);
 	%plot(xx*ones(n,1),e,'r+');
 	for ii=1:n
-		fprintf(figout,'    (%e,%e)%%\n',xx,e(ii));
+		fprintf(figout,'    (%e,%e)%%\n',xx,imag(e(ii)));
 	end
 		
 end
@@ -99,26 +189,20 @@ for ii=1:n
 		if (taylor)
 			hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
 			if ((hhorn<=80) && (hhorn>=-10))
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),hhorn);
+				fprintf(figout,'    (%e,%e)%%\n',xl(kk),imag(hhorn));
 			end
 			
 		else
 			hfp = el*fp{md}(xl(kk));
 			if ((hfp<=80) && (hfp>=-10))
 
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),hfp);
+				fprintf(figout,'    (%e,%e)%%\n',xl(kk),imag(hfp));
 			end
 			
 		end
 	end			
 	fprintf(figout,'    };\n\n');	
 end
-
-if (taylor)
-	fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation}%%\n',md-1);    
-else
-	fprintf(figout,'    \\legend{Eigenvalues, %dth Chebyshev approximation}%%\n',md-1);    
-end	
 
 fprintf(figout,'	\\end{axis}%%\n');
 
@@ -137,9 +221,9 @@ fprintf(figout,'\\endpgfgraphicnamed%%\n');
 
 
 if (taylor)
-	fprintf(figout,'\\caption{Example~\ref{example:%d}, $n=%d$, $\\mu_{0}=%3.2f$.}%%\n',example,n,t0);
+	fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $\\mu_{0}=%3.2f$.}%%\n',example,n,t0);
 else
-	fprintf(figout,'\\caption{Example~\ref{example:%d}, $n=%d$, $[\\mu_{1},\\mu_{2}]=[%3.2f,%3.2f]$.}%%\n',example,n,T2(1),T2(2));
+	fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $[\\mu_{1},\\mu_{2}]=[%3.2f,%3.2f]$.}%%\n',example,n,T2(1),T2(2));
 end
 
 if (taylor)

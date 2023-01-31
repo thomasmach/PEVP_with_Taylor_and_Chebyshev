@@ -55,7 +55,7 @@ xp = zeros(n+1,len,md);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 0th approximation
-[U,T] = eig(A(:,:,1));
+[U,T] = schur(A(:,:,1));
 [V,D0] = eig(T);
 % if A is sparse and only some eigenpairs are of
 % interested use for instance 
@@ -77,7 +77,8 @@ dp(:,1) = d0(ind(ind_eigenv));
 for ii = 1:len
 
 	% compute ei = U' v_0
-	ei = zeros(n,1); ei(ind(ind_eigenv(ii)))=1;
+	% ei = zeros(n,1); ei(ind(ind_eigenv(ii)))=1; 
+	ei = U'*vp(:,ii,1);
 
 	% old E
 	% code lines using the old F are still available as comment
@@ -87,11 +88,11 @@ for ii = 1:len
 	E = [0, ctranspose(ei); ei, dp(ii,1)*eye(n)-T];
 
  	if (usesingle)
-		%F = single(F);
+		% F = single(F);
 		E = single(E);
 	end
-	
-	%invF = pinv(F);
+		
+	% invF = pinv(F);
 	
 	% compute right hand side of (2.5)
 	for kk = 2:md
@@ -109,15 +110,15 @@ for ii = 1:len
 		
 		% solve (2.5)
 
-		%xp(:,ii,kk) = invF*[-lp/2;yp];
-		%dp(ii,kk) = xp(1,ii,kk);
-		%vp(:,ii,kk) = xp(2:end,ii,kk);
+		% xp(:,ii,kk) = invF*[-lp/2;yp];
+		% dp(ii,kk) = xp(1,ii,kk);
+		% vp(:,ii,kk) = xp(2:end,ii,kk);
 		
 		% solve (2.5) using a reformulation based on (2.6)
 		xp(:,ii,kk) = E\[-lp/2;U'*yp];
 		dp(ii,kk) = xp(1,ii,kk);
 		vp(:,ii,kk) = U*xp(2:end,ii,kk);
-		
+
 	end
 	
 end

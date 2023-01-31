@@ -6,29 +6,41 @@
 addpath('~/git/chebfun')
 
 
-% selectors numerical experiments
-if (~exist('selector','var'))
-	selector = 1;
+% selects different sets of parameters for different  numerical experiments
+if (~exist('select','var'))
+	select = 1;
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Table Selector
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% selector   floats            filenames    method
-% 1          Fig 2.1           fig41        Taylor
-%            Table 2.1         tab41        Taylor
-% 2          Fig 2.2           fig52        Taylor
-% 3          Fig 2.3           fig53        Taylor
-% 4          Fig 3.1           fig52_cheb   Chebyshev
-% **** Fig 4.1 (sketch of the springs and masses) not a Matlab figure
-% 5          Fig 4.2 (half)    fig61        Taylor   
-% 6          Fig 4.3           fig62        Taylor
-% 7          Fig 4.2 (half)    fig61_cheb   Chebyshev
-% 8          Fig 4.4           fig62_cheb   Chebyshev 
-% 9          Fig 4.5           fig71        Taylor
-% 10         -------not used in paper-----  Taylor
-% 11         Fig 4.6           fig71_cheb   Chebyshev 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table Select
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% select   floats            filenames      method                   example
+% 1          Fig 2.1           fig41          Taylor                   1 ... 2.3  
+%            Table 2.1         tab41          Taylor                   1
+% 2          Fig 2.2           fig52          Taylor                   1 
+% 3          Fig 2.3           fig53          Taylor                   1
+% 4          Fig 3.1           fig52_cheb     Chebyshev                1
+% **** Fig 4.1 (sketch of the springs and masses) not a Matlab figure  1
+% 5          Fig 4.2 (half)    fig61          Taylor                   2 ... 4.1
+% 6          Fig 4.3           fig62          Taylor                   2   
+% 7          Fig 4.2 (half)    fig61_cheb     Chebyshev                2
+% 57         Fig 4.2 (both)    fig61_both     Taylor and Chebyshev     2
+% 8          Fig 4.4           fig62_cheb     Chebyshev                2  
+% 9          Fig 4.5           fig71          Taylor                   3 ... 4.2 
+% 10         -------not used in paper-----    Taylor                   3
+% 11         Fig 4.6           fig71_cheb     Chebyshev                3
+% 12         Fig 4.7           fig61_taylor_1 Taylor                   1 ... 2.3
+% 13         Fig 4.9           fig61_cheb_1   Chebyshev                1 
+% 14         Fig 4.8           fig61_taylor_2 Taylor                   2 ... 4.1
+% 15         Fig 4.10          fig61_cheb_2   Chebyshev                2
+% 16         Fig 4.11          fig71_cheb_1   Chebyshev                1 ... 2.3
+% 17         -------not used in paper-----    Taylor                   1 
+% 18         -------not used in paper-----    Taylor                   1
+% 101        -------not used in paper-----    Taylor                   4 ... ???
+% for Fig 4.12, 4.13, 4.14 use experiments_sampling_2.m
+
 
 usevpa = false;
+chebyshev = false;
 
 % parameter interval (Chebyshev approximation)
 T2 = [1/4,1];
@@ -46,7 +58,7 @@ T2 = [1/4,1];
 % 9  like 1 but example 3 mu = -0.2
 % 10 like 1 but example 3 mu = 0.2
 
-switch selector
+switch select
 	case {1}
 		% proof-of-concept Taylor and Table sum to 8
 		floats = [1,2];
@@ -141,6 +153,26 @@ switch selector
  		taylor = true;
  		
  		example = 2;
+ 		t0 = 0.8
+	
+	case {57} %plot both 5 and 7
+ 		floats = [7];
+ 
+ 		n = 8;
+ 		md = 7;
+ 		% parameter interval
+ 		T = [0.1, 1.6];
+ 		% parameter figures
+ 		S = [0.9,1.2,3.0,4.0];
+ 		y_lim = [0, 2];
+ 		usevpa = false;
+ 		usesingle = false;
+ 		
+ 		taylor = true;
+		chebyshev = true;
+ 		
+ 		example = 2;
+		T2 = [0.5,1];
  		t0 = 0.8
  		
  	case {6}
@@ -613,7 +645,48 @@ xl = linspace(T(1),T(2),npoints);
 
 tic
 
-if (taylor)
+if (taylor) && (chebyshev)
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Taylor approximation
+
+	switch (example)
+		case {1}
+			A = zeros(n,n,md);
+			for kk = 1:md
+				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+			end
+			
+			
+		case {2}
+			A = zeros(n,n,md);
+			A(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
+			for kk = 2:md
+				A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+			end		
+			
+		case {3}
+			A = zeros(n,n,md);
+			A(:,:,1) = diag(ones(n,1),0) + diag(ones(n-1,1),1);
+			A(n,1,1) = t0;
+			
+			A(n,1,2) = 1;
+		
+	end
+	
+	% generate Chebyshev polynomials of second kind, scaled
+	gen_tsch;                     
+	sq = chebfun(@(mu) 2/(T2(2)-T2(1)) * sqrt(1-((2*mu-T2(1)-T2(2))/(T2(2)-T2(1)))^2), T2, 'vectorize','splitting','on');
+
+	Ac = zeros(n,n,md);            % Chebyshev expansion of M
+	for ii = 1:n
+		for jj = 1:n
+			for kk = 1:min(md,mdA)
+				Ac(ii,jj,kk) = sum(M{ii,jj}*Usch{kk}*sq,T2(1),T2(2));
+			end		
+		end
+	end	
+	
+elseif (taylor)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Taylor approximation
 
@@ -664,7 +737,15 @@ time_generating_or_computing_A = toc
 
 
 tic
-if (taylor)
+if (taylor && chebyshev)
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Taylor and Chebyshev approximation
+fprintf('here\n')
+
+	[dp,vp] = taylor_evp(A,md,mdA,usesingle);
+	[dpc,vpc] = cheb_evp(Ac,md,newtonsteps,mdA,usesingle);
+	
+elseif (taylor)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Taylor approximation
 
@@ -736,10 +817,19 @@ if (ismember(6,floats))
 end
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% float 6 Figure 6.1 both sampled eigenvalues and blue lines real and complex parts
+if (ismember(7,floats))
+	
+	makepgfplots_figure6;
+
+end
 
 
 
-if (selector == 2)
+
+
+if (select == 2)
 	% data for paragraph on page 9
 	
 	p = 5
