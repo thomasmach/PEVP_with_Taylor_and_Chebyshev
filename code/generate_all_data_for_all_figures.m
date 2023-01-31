@@ -7,7 +7,7 @@ end
 
 for select = [1,2]
 	clearvars -except select
-	experiments_sampling
+	experiments_sampling_2
 end
 
 

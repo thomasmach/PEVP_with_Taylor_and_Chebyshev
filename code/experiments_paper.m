@@ -64,7 +64,7 @@ switch select
 		floats = [1,2];
 
 		n = 8;
-		md = 7;
+		p = 7;
 		% parameter interval (plotting)
 		T = [0, 1.5];
 		% parameter figure magnifying
@@ -85,7 +85,7 @@ switch select
 		floats = [3];
 
 		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -104,7 +104,7 @@ switch select
 		floats = [3];
 
 		n = 8;
-		md = 18;
+		p = 18;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -121,7 +121,7 @@ switch select
 		floats = [3];
 
 		n = 8;
-		md = 20;
+		p = 20;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -141,7 +141,7 @@ switch select
  		floats = [1];
  
  		n = 8;
- 		md = 7;
+ 		p = 7;
  		% parameter interval
  		T = [0.1, 1.6];
  		% parameter figures
@@ -159,7 +159,7 @@ switch select
  		floats = [7];
  
  		n = 8;
- 		md = 7;
+ 		p = 7;
  		% parameter interval
  		T = [0.1, 1.6];
  		% parameter figures
@@ -179,7 +179,7 @@ switch select
  		floats = [3];
  
  		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval
 		T = [0.1, 1.6];		
 		% parameter figures
@@ -197,7 +197,7 @@ switch select
  		floats = [1];
  
  		n = 8;
- 		md = 7;
+ 		p = 7;
  		% parameter interval
  		T = [0.1, 1.6];
  		% parameter figures
@@ -216,7 +216,7 @@ switch select
  		floats = [3];
  
  		n = 8;
-		md = 30;
+		p = 30;
 		% parameter interval
 		T = [0.1, 1.6];		
 		% parameter figures
@@ -238,7 +238,7 @@ switch select
 		floats = [6];
 
 		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval (plotting)
 		T = [-1.0, 1.0];
 		% parameter figure magnifying
@@ -259,7 +259,7 @@ switch select
 		floats = [6];
 
 		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval (plotting)
 		T = [-1.0, 1.0];
 		% parameter figure magnifying
@@ -280,7 +280,7 @@ switch select
 		floats = [6];
 
 		n = 8;
-		md = 20;
+		p = 20;
 		% parameter interval (plotting)
 		T = [-1.0, 1.0];
 		% parameter figure magnifying
@@ -303,7 +303,7 @@ switch select
 		floats = [4];
 
 		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -321,7 +321,7 @@ switch select
 		floats = [4];
 
 		n = 8;
-		md = 20;
+		p = 20;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -340,7 +340,7 @@ switch select
  		floats = [4];
  
  		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval
 		T = [0.1, 1.6];		
 		% parameter figures
@@ -358,7 +358,7 @@ switch select
  		floats = [4];
  
  		n = 8;
-		md = 30;
+		p = 30;
 		% parameter interval
 		T = [0.1, 1.6];		
 		% parameter figures
@@ -379,7 +379,7 @@ switch select
  		floats = [5];
  
 		n = 8;
-		md = 20;
+		p = 20;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -398,7 +398,7 @@ switch select
  		floats = [5];
 
 		n = 8;
-		md = 26;
+		p = 26;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -416,7 +416,7 @@ switch select
  		floats = [5];
 
 		n = 800;
-		md = 26;
+		p = 26;
 		% parameter interval
 		T = [0, 1.5];		
 		% parameter figures
@@ -438,7 +438,7 @@ switch select
 		floats = [3];
 
 		n = 10;
-		md = 20;
+		p = 20;
 		% parameter interval
 		T = [0, 2.5];		
 		% parameter figures
@@ -593,13 +593,13 @@ end
 
 
 % max degree 
-if (~exist('md','var'))
-	md = 25;
+if (~exist('p','var'))
+	p = 25;
 end
 
 % max degree A 
-if (~exist('mdA','var'))
-	mdA = md;
+if (~exist('pA','var'))
+	pA = p;
 end
 
 % sampling
@@ -651,21 +651,21 @@ if (taylor) && (chebyshev)
 
 	switch (example)
 		case {1}
-			A = zeros(n,n,md);
-			for kk = 1:md
+			A = zeros(n,n,p);
+			for kk = 1:p
 				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
 			end
 			
 			
 		case {2}
-			A = zeros(n,n,md);
+			A = zeros(n,n,p);
 			A(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
-			for kk = 2:md
+			for kk = 2:p
 				A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
 			end		
 			
 		case {3}
-			A = zeros(n,n,md);
+			A = zeros(n,n,p);
 			A(:,:,1) = diag(ones(n,1),0) + diag(ones(n-1,1),1);
 			A(n,1,1) = t0;
 			
@@ -677,10 +677,10 @@ if (taylor) && (chebyshev)
 	gen_tsch;                     
 	sq = chebfun(@(mu) 2/(T2(2)-T2(1)) * sqrt(1-((2*mu-T2(1)-T2(2))/(T2(2)-T2(1)))^2), T2, 'vectorize','splitting','on');
 
-	Ac = zeros(n,n,md);            % Chebyshev expansion of M
+	Ac = zeros(n,n,p);            % Chebyshev expansion of M
 	for ii = 1:n
 		for jj = 1:n
-			for kk = 1:min(md,mdA)
+			for kk = 1:min(p,pA)
 				Ac(ii,jj,kk) = sum(M{ii,jj}*Usch{kk}*sq,T2(1),T2(2));
 			end		
 		end
@@ -692,21 +692,21 @@ elseif (taylor)
 
 	switch (example)
 		case {1}
-			A = zeros(n,n,md);
-			for kk = 1:md
+			A = zeros(n,n,p);
+			for kk = 1:p
 				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
 			end
 			
 			
 		case {2}
-			A = zeros(n,n,md);
+			A = zeros(n,n,p);
 			A(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
-			for kk = 2:md
+			for kk = 2:p
 				A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
 			end		
 			
 		case {3}
-			A = zeros(n,n,md);
+			A = zeros(n,n,p);
 			A(:,:,1) = diag(ones(n,1),0) + diag(ones(n-1,1),1);
 			A(n,1,1) = t0;
 			
@@ -722,10 +722,10 @@ else
 	gen_tsch;                     
 	sq = chebfun(@(mu) 2/(T2(2)-T2(1)) * sqrt(1-((2*mu-T2(1)-T2(2))/(T2(2)-T2(1)))^2), T2, 'vectorize','splitting','on');
 
-	A = zeros(n,n,md);            % Chebyshev expansion of M
+	A = zeros(n,n,p);            % Chebyshev expansion of M
 	for ii = 1:n
 		for jj = 1:n
-			for kk = 1:min(md,mdA)
+			for kk = 1:min(p,pA)
 				A(ii,jj,kk) = sum(M{ii,jj}*Usch{kk}*sq,T2(1),T2(2));
 			end		
 		end
@@ -742,20 +742,20 @@ if (taylor && chebyshev)
 	% Taylor and Chebyshev approximation
 fprintf('here\n')
 
-	[dp,vp] = taylor_evp(A,md,mdA,usesingle);
-	[dpc,vpc] = cheb_evp(Ac,md,newtonsteps,mdA,usesingle);
+	[dp,vp] = taylor_evp(A,p,pA,usesingle);
+	[dpc,vpc] = cheb_evp(Ac,p,newtonsteps,pA,usesingle);
 	
 elseif (taylor)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Taylor approximation
 
-	[dp,vp] = taylor_evp(A,md,mdA,usesingle);
+	[dp,vp] = taylor_evp(A,p,pA,usesingle);
 	
 else
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Chebyshev approximation
 	
-	[dp,vp] = cheb_evp(A,md,newtonsteps,mdA,usesingle);
+	[dp,vp] = cheb_evp(A,p,newtonsteps,pA,usesingle);
 	
 end
 

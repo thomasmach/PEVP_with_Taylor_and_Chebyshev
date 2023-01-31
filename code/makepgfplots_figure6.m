@@ -3,9 +3,9 @@
 
 
 if (usevpa)
-	filename = sprintf('exp_pap_figure41_both_%d_%d_%f_%d_vpa.tex',n,md,t0,example);
+	filename = sprintf('exp_pap_figure41_both_%d_%d_%f_%d_vpa.tex',n,p,t0,example);
 else
-	filename = sprintf('exp_pap_figure41_both_%d_%d_%f_%d.tex',n,md,t0,example);
+	filename = sprintf('exp_pap_figure41_both_%d_%d_%f_%d.tex',n,p,t0,example);
 end
 
 
@@ -16,7 +16,7 @@ figout = fopen(filename,'w');
 fp{1} = @(mu) dpc(:,1)*Usch{1}(mu);
 fvp{1} = @(mu) vpc(:,:,1)*Usch{1}(mu);
 
-for kk = 2:md
+for kk = 2:p
 	fp{kk} = @(mu) fp{kk-1}(mu) + dpc(:,kk)*Usch{kk}(mu);
 	fvp{kk} = @(mu) fvp{kk-1}(mu) + vpc(:,:,kk)*Usch{kk}(mu);
 end
@@ -25,7 +25,7 @@ end
 	
 fprintf(figout,'\\begin{figure}\n');
 fprintf(figout,'\\centering\n');
-fprintf(figout,'\\beginpgfgraphicnamed{figure-%d-%d-%d}\n',n,md,round(t0*100));
+fprintf(figout,'\\beginpgfgraphicnamed{figure-%d-%d-%d}\n',n,p,round(t0*100));
 fprintf(figout,'\\begin{tikzpicture}\n');
 fprintf(figout,'  \\begin{axis}[ %%\n');
 fprintf(figout,'    remember picture, %%\n');
@@ -86,7 +86,7 @@ for ii=1:n
 	el = zeros(1,n); 
 	el(ii) = 1;
 	for kk = 1:npoints
-		hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
+		hhorn = el*horner_f(xl(kk),t0,dp(:,1:p)); 
 		if ((hhorn<=80) && (hhorn>=-10))
 			fprintf(figout,'    (%e,%e)%%\n',xl(kk),hhorn);
 		end
@@ -100,7 +100,7 @@ for ii=1:n
 	el = zeros(1,n); 
 	el(ii) = 1;
 	for kk = 1:npoints
-		hfp = el*fp{md}(xl(kk));
+		hfp = el*fp{p}(xl(kk));
 		if ((hfp<=80) && (hfp>=-10))
 			
 			fprintf(figout,'    (%e,%e)%%\n',xl(kk),hfp);
@@ -120,7 +120,7 @@ if (S ~= [42,42,42,42])
 	fprintf(figout,'\n\n');		
 end
 
-fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation, %dth Chebyshev approximation}%%\n',md-1,md-1);    
+fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation, %dth Chebyshev approximation}%%\n',p-1,p-1);    
 
 
 fprintf(figout,'	\\end{axis}%%\n');
@@ -194,15 +194,15 @@ for ii=1:n
 	for kk = minkk:maxkk
 		
 		if (taylor)
-			if ((el*horner_f(xl(kk),t0,dp(:,1:md))<=S(4)) && (el*horner_f(xl(kk),t0,dp(:,1:md))>=S(3)))||(kk==minkk)			
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*horner_f(xl(kk),t0,dp(:,1:md)));
+			if ((el*horner_f(xl(kk),t0,dp(:,1:p))<=S(4)) && (el*horner_f(xl(kk),t0,dp(:,1:p))>=S(3)))||(kk==minkk)			
+				fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*horner_f(xl(kk),t0,dp(:,1:p)));
 			
 			end				
 			
 		else
 			
-			if ((el*fp{md}(xl(kk))<=S(4)) && (el*fp{md}(xl(kk))>=S(3)))||(kk==minkk)
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*fp{md}(xl(kk)));
+			if ((el*fp{p}(xl(kk))<=S(4)) && (el*fp{p}(xl(kk))>=S(3)))||(kk==minkk)
+				fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*fp{p}(xl(kk)));
 				
 			end
 		end
@@ -228,15 +228,15 @@ end
 
 if (taylor)
 	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,t0,example);
+		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
 	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,t0,example);
+		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
 	end		
 else	
 	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,T2(1),example);
+		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
 	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,T2(1),example);
+		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
 	end		
 end
 

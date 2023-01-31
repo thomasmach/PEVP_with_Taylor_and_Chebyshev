@@ -2,9 +2,9 @@
 % this file produces a tex-file that is directly inserted in the paper
 
 if (usevpa)||(usesingle)
-	filename = sprintf('exp_pap_fig52_%d_%d_%f_%d_vpa.tex',n,md,t0,example);
+	filename = sprintf('exp_pap_fig52_%d_%d_%f_%d_vpa.tex',n,p,t0,example);
 else		
-	filename = sprintf('exp_pap_fig52_%d_%d_%f_%d.tex',n,md,t0,example);
+	filename = sprintf('exp_pap_fig52_%d_%d_%f_%d.tex',n,p,t0,example);
 end
 figout = fopen(filename,'w');
 
@@ -14,7 +14,7 @@ if (~taylor)
 	fp{1} = @(mu) dp(:,1)*Usch{1}(mu);
 	fvp{1} = @(mu) vp(:,:,1)*Usch{1}(mu);
 
-	for kk = 2:md
+	for kk = 2:p
 		fp{kk} = @(mu) fp{kk-1}(mu) + dp(:,kk)*Usch{kk}(mu);
 		fvp{kk} = @(mu) fvp{kk-1}(mu) + vp(:,:,kk)*Usch{kk}(mu);
 	end
@@ -23,7 +23,7 @@ end
 
 fprintf(figout,'\\begin{figure}\n');
 fprintf(figout,'\\centering\n');
-fprintf(figout,'\\beginpgfgraphicnamed{figure2-%d-%d-%d}\n',n,md,round(t0*100));
+fprintf(figout,'\\beginpgfgraphicnamed{figure2-%d-%d-%d}\n',n,p,round(t0*100));
 fprintf(figout,'\\begin{tikzpicture}\n');
 fprintf(figout,'  \\begin{semilogyaxis}[ %%\n');
 fprintf(figout,'    remember picture, %%\n');
@@ -47,7 +47,7 @@ fprintf(figout,'    cycle list name = warmercolors,%%\n');
 fprintf(figout,'    mark size = 2]\n\n');
 
 
-zzz = zeros(npoints,md);
+zzz = zeros(npoints,p);
 for kk = 1:npoints
 	xx = xl(kk);
 	switch (example)
@@ -66,13 +66,13 @@ for kk = 1:npoints
 	%plot(xx*ones(n,1),e,'r+');
 	if (taylor)
 
-		for ll = 1:md
+		for ll = 1:p
 			zzz(kk,ll) = norm(sort(e)-sort(horner_f(xx,t0,dp(:,1:ll))));
 		end
 	
 	else
 		
-		for ll = 1:md
+		for ll = 1:p
 			zzz(kk,ll) = norm(sort(e)-sort(fp{ll}(xx)));
 % 			for tt = 1:n
 % 				et = zeros(n,1);
@@ -86,7 +86,7 @@ end
 
 
 
-for ii=1:md
+for ii=1:p
 	fprintf(figout,'    \\addplot\n');
 	fprintf(figout,'    coordinates{%%\n');
 	el = zeros(1,n); 
@@ -101,24 +101,24 @@ end
 
 indmin = min(find(xl>t0));
 if (usesingle)
-	indlast = min(find(zzz(indmin:end,md)>1e2));
+	indlast = min(find(zzz(indmin:end,p)>1e2));
 	ind15 = min(find(zzz(indmin:end,15)>1e-6))-1;
 else
-	indlast = min(find(zzz(indmin:end,md)>1e-13));
+	indlast = min(find(zzz(indmin:end,p)>1e-13));
 end
 
 fprintf(figout,'    \\node [coordinate,pin=above:{0th order}] at (axis cs:%e,%e){};\n',xl(indmin),zzz(indmin,1));		
 if (usesingle)
 	
-	fprintf(figout,'    \\node [coordinate,pin=left:{%dth order}] at (axis cs:%e,%e){};\n',md-1,xl(indlast+indmin),zzz(indlast+indmin,md));		
+	fprintf(figout,'    \\node [coordinate,pin=left:{%dth order}] at (axis cs:%e,%e){};\n',p-1,xl(indlast+indmin),zzz(indlast+indmin,p));		
 	fprintf(figout,'    \\node [coordinate,pin=right:{%dth order}] at (axis cs:%e,%e){};\n',15-1,xl(ind15+indmin),zzz(ind15+indmin,15));		
 
 else
 	
 	if (taylor)
-		fprintf(figout,'    \\node [coordinate,pin=right:{%dth order}] at (axis cs:%e,%e){};\n',md-1,xl(indlast+indmin),zzz(indlast+indmin,md));		
+		fprintf(figout,'    \\node [coordinate,pin=right:{%dth order}] at (axis cs:%e,%e){};\n',p-1,xl(indlast+indmin),zzz(indlast+indmin,p));		
 	else
-		fprintf(figout,'    \\node [coordinate,pin=below:{%dth order}] at (axis cs:%e,%e){};\n',md-1,xl(indlast+indmin),zzz(indlast+indmin,md));		
+		fprintf(figout,'    \\node [coordinate,pin=below:{%dth order}] at (axis cs:%e,%e){};\n',p-1,xl(indlast+indmin),zzz(indlast+indmin,p));		
 	end
 end
 
@@ -129,7 +129,7 @@ fprintf(figout,'(axis cs: %e,%e)coordinate(plot4aur) --',S(2),S(4));
 fprintf(figout,'(axis cs: %e,%e)coordinate(plot4aul) -- cycle; %%\n',S(1),S(4));
 fprintf(figout,'\n\n');		
 %fprintf(figout,'    \\legend{');
-%for ii=1:md
+%for ii=1:p
 %	if (mod(ii-1,10)==1)
 %		if (mod(ii-1,100)==11)
 %			fprintf(figout,'%dth order approximation,',ii-1);
@@ -152,7 +152,7 @@ fprintf(figout,'\n\n');
 %		fprintf(figout,'%dth order approximation,',ii-1);
 %	end
 %end		
-%fprintf(figout,'}%%\n',md-1);    
+%fprintf(figout,'}%%\n',p-1);    
 fprintf(figout,'	\\end{semilogyaxis}%%\n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -187,7 +187,7 @@ minkk = min(minkk,indmin-2);
 maxkk = max(maxkk,indmin);
 
 
-for ii=1:md
+for ii=1:p
 	labels{ii} = num2str(ii-1);
 	el = zeros(1,n); 
 	el(ii) = 1;
@@ -226,15 +226,15 @@ else
 end
 if (taylor)
 	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example4vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,t0,example);
+		fprintf(figout,'\\label{fig:example4vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
 	else
-		fprintf(figout,'\\label{fig:example4_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,t0,example);
+		fprintf(figout,'\\label{fig:example4_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
 	end		
 else	
 	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example4vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,T2(1),example);
+		fprintf(figout,'\\label{fig:example4vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
 	else
-		fprintf(figout,'\\label{fig:example4_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,T2(1),example);
+		fprintf(figout,'\\label{fig:example4_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
 	end		
 end
 

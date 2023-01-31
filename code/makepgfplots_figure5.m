@@ -4,17 +4,17 @@
 if (taylor)
 	
 	if (usevpa)
-		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d_vpa.tex',n,md,t0,example);
+		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d_vpa.tex',n,p,t0,example);
 	else
-		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d.tex',n,md,t0,example);
+		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d.tex',n,p,t0,example);
 	end
 
 else
 	
 	if (usevpa)
-		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d_vpa.tex',n,md,T2(1),T2(2),example);
+		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d_vpa.tex',n,p,T2(1),T2(2),example);
 	else
-		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d.tex',n,md,T2(1),T2(2),example);
+		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d.tex',n,p,T2(1),T2(2),example);
 	end
 	
 end
@@ -26,7 +26,7 @@ if (~taylor)
 	fp{1} = @(mu) dp(:,1)*Usch{1}(mu);
 	fvp{1} = @(mu) vp(:,:,1)*Usch{1}(mu);
 
-	for kk = 2:md
+	for kk = 2:p
 		fp{kk} = @(mu) fp{kk-1}(mu) + dp(:,kk)*Usch{kk}(mu);
 		fvp{kk} = @(mu) fvp{kk-1}(mu) + vp(:,:,kk)*Usch{kk}(mu);
 	end
@@ -36,7 +36,7 @@ end
 	
 fprintf(figout,'\\begin{figure}\n');
 fprintf(figout,'\\centering\n');
-fprintf(figout,'\\beginpgfgraphicnamed{figure-%d-%d-%d}\n',n,md,round(t0*100));
+fprintf(figout,'\\beginpgfgraphicnamed{figure-%d-%d-%d}\n',n,p,round(t0*100));
 fprintf(figout,'\\begin{tikzpicture}\n');
 
 fprintf(figout,'  \\begin{axis}[ %%\n');
@@ -99,13 +99,13 @@ for ii=1:n
 	el(ii) = 1;
 	for kk = 1:npoints
 		if (taylor)
-			hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
+			hhorn = el*horner_f(xl(kk),t0,dp(:,1:p)); 
 			if ((hhorn<=80) && (hhorn>=-10))
 				fprintf(figout,'    (%e,%e)%%\n',xl(kk),real(hhorn));
 			end
 			
 		else
-			hfp = el*fp{md}(xl(kk));
+			hfp = el*fp{p}(xl(kk));
 			if ((hfp<=80) && (hfp>=-10))
 
 				fprintf(figout,'    (%e,%e)%%\n',xl(kk),real(hfp));
@@ -117,9 +117,9 @@ for ii=1:n
 end
 
 if (taylor)
-	fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation}%%\n',md-1);    
+	fprintf(figout,'    \\legend{Eigenvalues, %dth Taylor approximation}%%\n',p-1);    
 else
-	fprintf(figout,'    \\legend{Eigenvalues, %dth Chebyshev approximation}%%\n',md-1);    
+	fprintf(figout,'    \\legend{Eigenvalues, %dth Chebyshev approximation}%%\n',p-1);    
 end	
 
 fprintf(figout,'	\\end{axis}%%\n');
@@ -187,13 +187,13 @@ for ii=1:n
 	el(ii) = 1;
 	for kk = 1:npoints
 		if (taylor)
-			hhorn = el*horner_f(xl(kk),t0,dp(:,1:md)); 
+			hhorn = el*horner_f(xl(kk),t0,dp(:,1:p)); 
 			if ((hhorn<=80) && (hhorn>=-10))
 				fprintf(figout,'    (%e,%e)%%\n',xl(kk),imag(hhorn));
 			end
 			
 		else
-			hfp = el*fp{md}(xl(kk));
+			hfp = el*fp{p}(xl(kk));
 			if ((hfp<=80) && (hfp>=-10))
 
 				fprintf(figout,'    (%e,%e)%%\n',xl(kk),imag(hfp));
@@ -228,15 +228,15 @@ end
 
 if (taylor)
 	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,t0,example);
+		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
 	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,t0,example);
+		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
 	end		
 else	
 	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,T2(1),example);
+		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
 	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,md,T2(1),example);
+		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
 	end		
 end
 

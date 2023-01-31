@@ -36,7 +36,7 @@ usevpa = false;
 switch select
 	case {1}
 		n = 8;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0, 1.5];
@@ -63,7 +63,7 @@ switch select
 
 	case {2}
 		n = 8;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0.1, 1.6];
@@ -90,7 +90,7 @@ switch select
 
 	case {3}
 		n = 8;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0.1, 1.6];
@@ -117,7 +117,7 @@ switch select
 
 	case {4}
 		n = 8;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0.1, 1.6];
@@ -145,7 +145,7 @@ switch select
 		
 	case {5}
 		n = 80;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0, 1.5];
@@ -172,7 +172,7 @@ switch select
 	
 	case {6}
 		n = 800;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0, 1.5];
@@ -199,7 +199,7 @@ switch select
 	
 	case {7}
 		n = 8000;
-		md = 7;
+		p = 7;
 
 		% parameter interval (plotting)
 		T = [0, 1.5];
@@ -390,30 +390,30 @@ tic
 
 switch (example)
 	case {1}
-		AT = zeros(n,n,md);
-		for kk = 1:md
+		AT = zeros(n,n,p);
+		for kk = 1:p
 			AT(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
 		end
 		
 		
 	case {2,5}
-		AT = zeros(n,n,md);
+		AT = zeros(n,n,p);
 		AT(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
-		for kk = 2:md
+		for kk = 2:p
 			AT(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
 		end		
 		
 	case {3}
-		AT = zeros(n,n,md);
+		AT = zeros(n,n,p);
 		AT(:,:,1) = diag(ones(n,1),0) + diag(ones(n-1,1),1);
 		AT(n,1,1) = t0;
 			
 		AT(n,1,2) = 1;
 		
 	case {4}
-		AT = zeros(n,n,md);
+		AT = zeros(n,n,p);
 		AT(:,:,1) = diag([ones(floor(n/2),1);(1/sqrt(t0))*ones(2,1);ones(n-floor(n/2)-2,1)])*K*diag([ones(floor(n/2),1);(1/sqrt(t0))*ones(2,1);ones(n-floor(n/2)-2,1)]);
-		for kk = 2:md
+		for kk = 2:p
 
 			kl = kk;
 			% setup stiffness matrix
@@ -446,10 +446,10 @@ end
 gen_tsch;                     
 sq = chebfun(@(mu) 2/(T2(2)-T2(1)) * sqrt(1-((2*mu-T2(1)-T2(2))/(T2(2)-T2(1)))^2), T2, 'vectorize','splitting','on');
 
-AC = zeros(n,n,md);            % Chebyshev expansion of M
+AC = zeros(n,n,p);            % Chebyshev expansion of M
 for ii = 1:n
 	for jj = 1:n
-		for kk = 1:min(md,md)
+		for kk = 1:min(p,p)
 			AC(ii,jj,kk) = sum(M{ii,jj}*Usch{kk}*sq,T2(1),T2(2));
 		end		
 	end
@@ -462,13 +462,13 @@ tic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Taylor approximation
 
-[dpT,vpT] = taylor_evp(AT,md,md,usesingle);
+[dpT,vpT] = taylor_evp(AT,p,p,usesingle);
 	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chebyshev approximation
 
-[dpC,vpC] = cheb_evp(AC,md,newtonsteps,md,usesingle);
+[dpC,vpC] = cheb_evp(AC,p,newtonsteps,p,usesingle);
 	
 
 time_solving_pevp = toc
@@ -520,8 +520,8 @@ tic
 for ii = 1:sampling
 	murand = store_mu_rand(ii);
 	
-	% h = fp{md}(murand);
-	h = horner_f(murand,t0,dpT(:,1:md));
+	% h = fp{p}(murand);
+	h = horner_f(murand,t0,dpT(:,1:p));
 	h = sort(h,'descend');
 	store_sampled_eig_taylor(:,ii) = h(le);
 	
@@ -535,7 +535,7 @@ tic
 for ii = 1:sampling
 	murand = store_mu_rand(ii);
 	
-	h5 = horner_f(murand,t0,vpT(:,:,1:md));
+	h5 = horner_f(murand,t0,vpT(:,:,1:p));
 	switch (example)
 		case {1}
 			h6 = diag(h5'*exp(-murand*U)*h5)./diag(h5'*h5);
@@ -559,7 +559,7 @@ tic
 % sampling Chebyshev
 %fp{1} = @(mu) dpC(:,1)*Usch{1}(mu);
 %
-%for kk = 2:md
+%for kk = 2:p
 %	fp{kk} = @(mu) fp{kk-1}(mu) + dpC(:,kk)*Usch{kk}(mu);
 %end
 
@@ -570,11 +570,11 @@ for ii = 1:sampling
 	
 	u1 = scfactor;
 	h2 = dpC(:,1)*u1;
-	if (md>=2)
+	if (p>=2)
  		u2 = 2*(mutrans)*scfactor;
 		h2 = h2 + dpC(:,2)*u2;
 	end
-	for jj = 3:md
+	for jj = 3:p
 		u3 = 2*u2*mutrans-u1;
 		u1 = u2;
 		u2 = u3;
@@ -597,11 +597,11 @@ for ii = 1:sampling
 	
 	u1 = scfactor;
 	h3 = vpC(:,:,1)*u1;
-	if (md>=2)
+	if (p>=2)
  		u2 = 2*(mutrans)*scfactor;
 		h3 = h3 + vpC(:,:,2)*u2;
 	end
-	for jj = 3:md
+	for jj = 3:p
 		u3 = 2*u2*mutrans-u1;
 		u1 = u2;
 		u2 = u3;
@@ -659,9 +659,9 @@ time_sampling_Rayleigh = toc
 
 
 if (usevpa)
-	filename = sprintf('exp_sampling_1_%d_%d_%f_%d_vpa.dat',n,md,t0,example);
+	filename = sprintf('exp_sampling_1_%d_%d_%f_%d_vpa.dat',n,p,t0,example);
 else
-	filename = sprintf('exp_sampling_1_%d_%d_%f_%d.dat',n,md,t0,example);
+	filename = sprintf('exp_sampling_1_%d_%d_%f_%d.dat',n,p,t0,example);
 end
 
 datout = fopen(filename,'w');
