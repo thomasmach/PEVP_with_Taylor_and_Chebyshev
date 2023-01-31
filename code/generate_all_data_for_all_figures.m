@@ -10,7 +10,7 @@ for select = [1,2]
 	experiments_sampling_2
 end
 
-
+runtime_test
 
 %%% Local Variables: 
 %%% mode:matlab
