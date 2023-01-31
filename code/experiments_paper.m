@@ -19,7 +19,14 @@ end
 % 2          Fig 2.2           fig52        Taylor
 % 3          Fig 2.3           fig53        Taylor
 % 4          Fig 3.1           fig52_cheb   Chebyshev
-
+% **** Fig 4.1 (sketch of the springs and masses) not a Matlab figure
+% 5          Fig 4.2 (half)    fig61        Taylor   
+% 6          Fig 4.3           fig62        Taylor
+% 7          Fig 4.2 (half)    fig61_cheb   Chebyshev
+% 8          Fig 4.4           fig62_cheb   Chebyshev 
+% 9          Fig 4.5           fig71        Taylor
+% 10         -------not used in paper-----  Taylor
+% 11         Fig 4.6           fig71_cheb   Chebyshev 
 
 usevpa = false;
 
@@ -196,7 +203,7 @@ switch selector
 		
 	case {9}
 		% example 3
-		floats = [1];
+		floats = [6];
 
 		n = 8;
 		md = 26;
@@ -217,7 +224,7 @@ switch selector
 		
 	case {10}
 		% example 3
-		floats = [1];
+		floats = [6];
 
 		n = 8;
 		md = 26;
@@ -238,7 +245,7 @@ switch selector
 
 	case {11}
 		% example 3
-		floats = [1];
+		floats = [6];
 
 		n = 8;
 		md = 20;
@@ -717,6 +724,17 @@ if (ismember(5,floats))
 	makepgfplots_figure4;
 
 end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% float 6 Figure 4.5/4.6 sampled eigenvalues and blue lines real and complex parts
+if (ismember(6,floats))
+	
+	makepgfplots_figure5;
+
+end
+
 
 
 

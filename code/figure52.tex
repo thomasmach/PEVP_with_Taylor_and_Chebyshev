@@ -1,0 +1,309 @@
+\documentclass[final]{siamltex}
+%\documentclass[draft]{siamltex}
+\usepackage{showkeys}
+\usepackage{amssymb,amsmath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% tikz
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{
+  tikz,%
+  pgfplots, %
+  xcolor, %
+  mathdots, %
+  %a4wide,
+}
+\pgfplotsset{compat=1.15}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+\usetikzlibrary{patterns}
+\usetikzlibrary{decorations.pathmorphing}
+\usepgfplotslibrary{statistics}
+% \usetikzlibrary{fit}
+% \usetikzlibrary{backgrounds}
+% \usetikzlibrary{matrix}
+% \usetikzlibrary{decorations.pathreplacing} %
+
+\pgfplotscreateplotcyclelist{warmercolors}{
+  {SPECblue!80!SPECorange},
+  {SPECblue!70!SPECorange},
+  {SPECblue!60!SPECorange},
+  {SPECblue!50!SPECorange},
+  {SPECblue!40!SPECorange},
+  {SPECblue!30!SPECorange},
+  {SPECblue!20!SPECorange},
+  {SPECblue!10!SPECorange},
+  {SPECorange},
+  {SPECorange!90!SPECred},
+  {SPECorange!80!SPECred},
+  {SPECorange!70!SPECred},
+  {SPECorange!60!SPECred},
+  {SPECorange!50!SPECred},
+  {SPECorange!40!SPECred},
+  {SPECorange!30!SPECred},
+  {SPECorange!20!SPECred},
+  {SPECorange!10!SPECred},
+  {SPECred},
+  {SPECred!90!black},
+  {SPECred!80!black},
+  {SPECred!70!black},
+  {SPECred!60!black},
+  {SPECred!50!black},
+  {SPECred!40!black},
+  {SPECred!30!black},
+  {SPECred!20!black},
+  {SPECred!10!black},
+  {black},
+}
+
+% some color definitions
+\definecolor{SPECorange}{rgb}{1.0,.5625,0}
+\definecolor{SPECblue}{rgb}{0,0,0.75}
+\definecolor{SPECred}{rgb}{0.75,0,0}
+\definecolor{SPECgreen}{rgb}{0,0.75,0}
+\definecolor{SPECblack}{rgb}{0.75,0.75,0.75}
+\definecolor{SPECCorange}{rgb}{1,0.9,0.6}
+\definecolor{SPECCblue}{rgb}{0,0,0.25}
+\definecolor{SPECCred}{rgb}{1.0,0,0}
+\definecolor{SPECCgreen}{rgb}{0.25,0.75,0.25}
+
+%\usepackage{arydshln}
+\usepackage{cite} % Orders citations and puts 3-6, instead of 3,4,5,6
+%\usepackage{rotfig_tikz} % rotfig with TikZ extension
+
+% \usepackage{subfig}
+% \usepackage{verbatim}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{listings}
+%\usepackage{showkeys}
+\usepackage[ruled, lined, boxed, algo2e]{algorithm2e}
+
+%\theoremstyle{remark}
+\newtheorem{Proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{\it Remark}
+\newtheorem{example}[theorem]{\it Example}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{ifpdf}
+%\ifpdf
+\usepackage[pdftex,colorlinks=true,linkcolor=SPECred,filecolor=SPECgreen,citecolor=SPECblue,pdfpagemode=UseNone,hypertexnames=false]{hyperref}
+%\else
+%\usepackage[dvips,colorlinks=true,linkcolor=SPECred,filecolor=SPECgreen,citecolor=SPECblue,pdfpagemode=UseNone]{hyperref}
+%\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% define some commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcommand{\absval}[1]{\mbox{$\mid \!#1\! \mid$}}
+\providecommand{\abs}[1]{\left\lvert#1\right\rvert} %
+\newcommand{\norm}[1]{\mbox{$\parallel\!#1\!\parallel$}}
+\newcommand{\diagg}[1]{\mbox{diag$\left\{#1\right\}$}}
+\newcommand{\ess}{\mbox{$\mathcal{S}$}}
+%lfs\newcommand{\eee}{\mbox{$\mathcal{E}$}}
+\newcommand{\kay}{\mbox{$\mathcal{K}$}}
+\newcommand{\cue}{\mbox{$\mathcal{Q}$}}
+\newcommand{\hv}[1]{\left[#1\right]}
+
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\Cn}{\ensuremath{\mathbb{C}^{n}}}
+\newcommand{\Cnn}{\ensuremath{\mathbb{C}^{n\times n}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\Rn}{\ensuremath{\mathbb{R}^{n}}}
+\newcommand{\Rnn}{\ensuremath{\mathbb{R}^{n\times n}}}
+\newcommand{\cO}{\ensuremath{\mathcal{O}}}
+\newcommand{\cE}{\ensuremath{\mathcal{E}}}
+\newcommand{\cH}{\ensuremath{\mathcal{H}}}
+\newcommand{\cI}{\ensuremath{\mathcal{I}}}
+\newcommand{\ctC}{\ensuremath{\mathcal{\widetilde{C}}}}
+\newcommand{\tc}{\ensuremath{\widetilde{c}}}
+
+\newcommand\oc{\ensuremath{\overline{c}}}
+\newcommand\od{\ensuremath{\overline{d}}}
+\newcommand\og{\ensuremath{\overline{g}}}
+\newcommand\orr{\ensuremath{\overline{r}}}
+\newcommand\os{\ensuremath{\overline{s}}}
+\newcommand\ot{\ensuremath{\overline{t}}}
+\newcommand\ox{\ensuremath{\overline{x}}}
+
+\newcommand{\myspan}[1]{\ensuremath{\mathop{\mathrm{span}}\left\lbrace #1 \right\rbrace}}
+
+\newcommand{\absval}[1]{\mbox{$\mid\!#1\!\mid$}}
+\newcommand{\float}[1]{\mbox{fl$\left(#1\right)$}}
+\newcommand{\spn}[1]{\mbox{{\rm span}$\left\{#1\right\}$}}
+\newcommand{\cee}{\mbox{$\mathcal{C}$}}
+\newcommand{\eee}{\mbox{$\mathcal{E}$}}
+\newcommand{\aich}{\mbox{$\mathcal{H}$}}
+
+
+%% bold math 
+\newcommand{\bA}{\ensuremath{\mathbf{A}}}
+\newcommand{\bB}{\ensuremath{\mathbf{B}}}
+\newcommand{\bC}{\ensuremath{\mathbf{C}}}
+\newcommand{\bD}{\ensuremath{\mathbf{D}}}
+\newcommand{\bE}{\ensuremath{\mathbf{E}}}
+\newcommand{\bF}{\ensuremath{\mathbf{F}}}
+\newcommand{\bG}{\ensuremath{\mathbf{G}}}
+\newcommand{\bH}{\ensuremath{\mathbf{H}}}
+\newcommand{\bI}{\ensuremath{\mathbf{I}}}
+\newcommand{\bJ}{\ensuremath{\mathbf{J}}}
+\newcommand{\bK}{\ensuremath{\mathbf{K}}}
+\newcommand{\bL}{\ensuremath{\mathbf{L}}}
+\newcommand{\bM}{\ensuremath{\mathbf{M}}}
+\newcommand{\bN}{\ensuremath{\mathbf{N}}}
+\newcommand{\bO}{\ensuremath{\mathbf{O}}}
+\newcommand{\bP}{\ensuremath{\mathbf{P}}}
+\newcommand{\bQ}{\ensuremath{\mathbf{Q}}}
+\newcommand{\bR}{\ensuremath{\mathbf{R}}}
+\newcommand{\bS}{\ensuremath{\mathbf{S}}}
+\newcommand{\bT}{\ensuremath{\mathbf{T}}}
+\newcommand{\bU}{\ensuremath{\mathbf{U}}}
+\newcommand{\bV}{\ensuremath{\mathbf{V}}}
+\newcommand{\bW}{\ensuremath{\mathbf{W}}}
+\newcommand{\bX}{\ensuremath{\mathbf{X}}}
+\newcommand{\bY}{\ensuremath{\mathbf{Y}}}
+\newcommand{\bZ}{\ensuremath{\mathbf{Z}}}
+
+\newcommand{\ba}{\ensuremath{\mathbf{a}}}
+\newcommand{\bb}{\ensuremath{\mathbf{b}}}
+\newcommand{\bc}{\ensuremath{\mathbf{c}}}
+\newcommand{\boldd}{\ensuremath{\mathbf{d}}}
+\newcommand{\bolde}{\ensuremath{\mathbf{e}}}
+\newcommand{\boldf}{\ensuremath{\mathbf{f}}}
+\newcommand{\bg}{\ensuremath{\mathbf{g}}}
+\newcommand{\bh}{\ensuremath{\mathbf{h}}}
+\newcommand{\bi}{\ensuremath{\mathbf{i}}}
+\newcommand{\bj}{\ensuremath{\mathbf{j}}}
+\newcommand{\bk}{\ensuremath{\mathbf{k}}}
+\newcommand{\bl}{\ensuremath{\mathbf{l}}}
+\newcommand{\bm}{\ensuremath{\mathbf{m}}}
+\newcommand{\bn}{\ensuremath{\mathbf{n}}}
+\newcommand{\bo}{\ensuremath{\mathbf{o}}}
+\newcommand{\bp}{\ensuremath{\mathbf{p}}}
+\newcommand{\bq}{\ensuremath{\mathbf{q}}}
+\newcommand{\br}{\ensuremath{\mathbf{r}}}
+\newcommand{\bs}{\ensuremath{\mathbf{s}}}
+\newcommand{\bt}{\ensuremath{\mathbf{t}}}
+\newcommand{\bu}{\ensuremath{\mathbf{u}}}
+\newcommand{\bv}{\ensuremath{\mathbf{v}}}
+\newcommand{\bw}{\ensuremath{\mathbf{w}}}
+\newcommand{\bx}{\ensuremath{\mathbf{x}}}
+\newcommand{\by}{\ensuremath{\mathbf{y}}}
+\newcommand{\bz}{\ensuremath{\mathbf{z}}}
+
+\newcommand{\cN}{\ensuremath{\mathcal{N}}}
+
+\newcommand{\ur}{\varepsilon_m} % UNIT ROUND-off
+
+\newcommand{\lapack}{\textsf{LAPACK}}
+\DeclareMathOperator{\expm}{\text{\rm expm}}
+
+%\newcommand{\rr}[1]{\textbf{Writing Remark: #1}}
+%\hyphenation{split-one}
+\newcommand{\dmu}{\,\mathrm{d}\mu}
+
+%\newenvironment{tm}{\begin{quote}\small\sf{\color{SPECorange}$\star$~Thomas~}}{\end{quote}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Start Document
+% Frontpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Solving the Parametric Eigenvalue Problem by Taylor Series and Chebyshev
+  Expansion\\---Figure 2.1---%
+  \thanks{The research has been partially funded by the Deutsche
+Forschungsgemeinschaft (DFG)---Project-ID 318763901---SFB1294.}
+}
+
+\author{Thomas Mach\footnotemark[3]\and Melina Freitag\footnotemark[3]}
+
+\begin{document}
+\maketitle
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\footnotetext[3]{%
+  University of Potsdam, Institute of Mathematics, 
+  Karl-Liebknecht-Str.\ 24--25, 14476 Potsdam, Germany;
+  % Datenassimilation, Insitut f\"ur Mathematik, Univerist\"at Potsdam;\\
+  \mbox{(\texttt{\{thomas.mach,melina.freitag\}@uni-potsdam.de})}.}%
+
+
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+
+\date{\today}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abstract
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+  This file only compiles Figure 2.1
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Keywords
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{keywords}
+\textit{incomplete list of keywords}, %
+stochastic eigenvalue problem, %
+parametric eigenvalue problem, %
+Taylor expansion, %
+Chebyshev expansion
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AMS Subject Classification
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{AMS}
+  65F15% Eigenvalues, eigenvectors
+  , 65H17% Eigenvalues, eigenvectors
+  , 15A18% Eigenvalues, singular values, and eigenvectors
+  % , 15A23% Factorization of matrices
+  % , 15B10% Orthogonal matrices
+  , 93B60% Systems and Control Theory -- Eigenvalue problems
+\end{AMS}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Headings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{myheadings} %
+\thispagestyle{plain} %
+\markboth{%T.\ Mach%
+}%
+{Solving Parametric Eigenvalue Problems}
+
+
+%\input{fig52} % in the paper known as
+\input{exp_pap_fig52_8_26_0.200000_1.tex} % produced by Matlab
+\end{document}
+
+
+
+%% Thomas' emacs local variable set up
+
+%%% Local Variables: 
+%%% mode: LaTeX
+%%% TeX-PDF-mode:t
+%%% TeX-engine: luatex
+%%% auto-fill-function:nil
+%%% mode:auto-fill
+%%% flyspell-mode:nil
+%%% mode:flyspell
+%%% ispell-local-dictionary: "american"
+%%% End: 
+
+
+
+
+
+
+
+
+
