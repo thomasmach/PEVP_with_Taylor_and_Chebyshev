@@ -89,7 +89,7 @@ filename = sprintf('exp_pap_runtime_table.tex');
 tout = fopen(filename,'w');
 
 cl = lNN/3;
-for ii=1:clx
+for ii=1:cl
 	if (ii==1)
 		fprintf(tout,'%d & %d & %8.4f & ---&\n',NN(ii),PP(ii),time(ii));
 		fprintf(tout,'%d & %d & %8.4f & ---&\n',NN(cl+ii),PP(cl+ii),time(cl+ii));

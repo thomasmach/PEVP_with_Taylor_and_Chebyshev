@@ -463,7 +463,8 @@ tic
 % Taylor approximation
 
 [dpT,vpT] = taylor_evp(AT,p,p,usesingle);
-	
+
+time_solving_pevp_taylor = toc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chebyshev approximation
@@ -472,6 +473,7 @@ tic
 	
 
 time_solving_pevp = toc
+time_solving_pevp_chebyshev = time_solving_pevp-time_solving_pevp_taylor
 
 
 

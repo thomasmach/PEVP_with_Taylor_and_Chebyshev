@@ -362,7 +362,7 @@ switch select
 		% parameter interval
 		T = [0.1, 1.6];		
 		% parameter figures
-		S = [0.5,1.0,1e-15,1e-11];
+		S = [0.5,1.0,1e-17,1e-13];
  		y_lim = [0, 2];
  		usevpa = false;
  		usesingle = false;
