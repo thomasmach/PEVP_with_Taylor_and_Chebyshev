@@ -653,7 +653,8 @@ if (taylor) && (chebyshev)
 		case {1}
 			A = zeros(n,n,p);
 			for kk = 1:p
-				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+				%A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U)/factorial(kk-1);
 			end
 			
 			
@@ -661,7 +662,8 @@ if (taylor) && (chebyshev)
 			A = zeros(n,n,p);
 			A(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
 			for kk = 2:p
-				A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+				%A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+				A(:,:,kk) = diag([zeros(floor(n/2),1);(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
 			end		
 			
 		case {3}
@@ -694,7 +696,10 @@ elseif (taylor)
 		case {1}
 			A = zeros(n,n,p);
 			for kk = 1:p
-				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+				% the implementation differs from the paper in the sense that we divide
+				% A^(k) by k! to avoid having to compute binomial coefficients and factorials 
+				%A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+				A(:,:,kk) = (-U).^(kk-1).*exp(-t0*U)/factorial(kk-1);
 			end
 			
 			
@@ -702,7 +707,8 @@ elseif (taylor)
 			A = zeros(n,n,p);
 			A(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
 			for kk = 2:p
-				A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+				%A(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+				A(:,:,kk) = diag([zeros(floor(n/2),1);(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
 			end		
 			
 		case {3}

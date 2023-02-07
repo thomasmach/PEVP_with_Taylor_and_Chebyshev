@@ -16,9 +16,11 @@ d = dims(dim) - 1;
 if (dim==3)
 	for jj = 1:length(mu)	
 		
-		x(:,:,jj) = coeff(:,:,d+1)/factorial(d);
+		%x(:,:,jj) = coeff(:,:,d+1)/factorial(d);
+		x(:,:,jj) = coeff(:,:,d+1);
 		for kk = d:-1:1
-			x(:,:,jj) = x(:,:,jj)*(mu(jj)-t0) + coeff(:,:,kk)/factorial(kk-1);
+			%x(:,:,jj) = x(:,:,jj)*(mu(jj)-t0) + coeff(:,:,kk)/factorial(kk-1);
+			x(:,:,jj) = x(:,:,jj)*(mu(jj)-t0) + coeff(:,:,kk);
 		end
 		
 	end
@@ -26,9 +28,11 @@ elseif (dim==2)
 	
 	for jj = 1:length(mu)	
 		
-		x(:,jj) = coeff(:,d+1)/factorial(d);
+		%x(:,jj) = coeff(:,d+1)/factorial(d);
+		x(:,jj) = coeff(:,d+1);
 		for kk = d:-1:1
-			x(:,jj) = x(:,jj)*(mu(jj)-t0) + coeff(:,kk)/factorial(kk-1);
+			%x(:,jj) = x(:,jj)*(mu(jj)-t0) + coeff(:,kk)/factorial(kk-1);
+			x(:,jj) = x(:,jj)*(mu(jj)-t0) + coeff(:,kk);
 		end
 		
 	end

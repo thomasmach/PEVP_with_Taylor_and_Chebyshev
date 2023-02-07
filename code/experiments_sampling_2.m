@@ -392,7 +392,8 @@ switch (example)
 	case {1}
 		AT = zeros(n,n,p);
 		for kk = 1:p
-			AT(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+			%AT(:,:,kk) = (-U).^(kk-1).*exp(-t0*U);
+			AT(:,:,kk) = (-U).^(kk-1).*exp(-t0*U)/factorial(kk-1);
 		end
 		
 		
@@ -400,7 +401,8 @@ switch (example)
 		AT = zeros(n,n,p);
 		AT(:,:,1) = diag([ones(floor(n/2),1);(1/t0)*ones(2,1);ones(n-floor(n/2)-2,1)])*K;
 		for kk = 2:p
-			AT(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+			%AT(:,:,kk) = diag([zeros(floor(n/2),1);factorial(kk-1)*(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
+			AT(:,:,kk) = diag([zeros(floor(n/2),1);(-1)^(kk-1)*t0^(-kk)*ones(2,1);zeros(n-floor(n/2)-2,1)])*K;
 		end		
 		
 	case {3}
@@ -519,10 +521,15 @@ time_sampling_full_matrix = toc
 tic 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % sampling Taylor + Horner scheme
+%dpT=fliplr(dpT);
 for ii = 1:sampling
 	murand = store_mu_rand(ii);
-	
+
+	% polyval is slower
 	% h = fp{p}(murand);
+	% for jj = 1:n
+  %	  h(jj) = polyval(dpT(jj,1:p),murand-t0);
+	% end
 	h = horner_f(murand,t0,dpT(:,1:p));
 	h = sort(h,'descend');
 	store_sampled_eig_taylor(:,ii) = h(le);
