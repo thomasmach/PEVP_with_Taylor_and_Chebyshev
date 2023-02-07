@@ -22,7 +22,7 @@ if (dim==3)
 		end
 		
 	end
-elseif (dim ==2)
+elseif (dim==2)
 	
 	for jj = 1:length(mu)	
 		
