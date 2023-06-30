@@ -1,23 +1,26 @@
 %% Plot of sampled eigenvalues and Taylor/Chebushev approximation
 % this file produces a tex-file that is directly inserted in the paper
 
+fprintf('Running makepgfplots_figure1.m; type: %s\n',type);
+
 if (taylor)
 	
 	if (usevpa)
-		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d_vpa.tex',n,p,t0,example);
+		filename = sprintf('exp_%s_figure41_taylor_%d_%d_%f_%d_vpa.tex',type,n,p,t0,example);
 	else
-		filename = sprintf('exp_pap_figure41_taylor_%d_%d_%f_%d.tex',n,p,t0,example);
+		filename = sprintf('exp_%s_figure41_taylor_%d_%d_%f_%d.tex',type,n,p,t0,example);
 	end
 
 else
 	
 	if (usevpa)
-		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d_vpa.tex',n,p,T2(1),T2(2),example);
+		filename = sprintf('exp_%s_figure41_chebyshev_%d_%d_%f_%f_%d_vpa.tex',type,n,p,T2(1),T2(2),example);
 	else
-		filename = sprintf('exp_pap_figure41_chebyshev_%d_%d_%f_%f_%d.tex',n,p,T2(1),T2(2),example);
+		filename = sprintf('exp_%s_figure41_chebyshev_%d_%d_%f_%f_%d.tex',type,n,p,T2(1),T2(2),example);
 	end
 	
 end
+fprintf('Writing file %s\n',filename);
 figout = fopen(filename,'w');
 
 
@@ -34,31 +37,59 @@ if (~taylor)
 end
 
 	
-fprintf(figout,'\\begin{figure}\n');
-fprintf(figout,'\\centering\n');
+if (type=='pap')
+	fprintf(figout,'\\begin{figure}\n');
+	fprintf(figout,'\\centering\n');
+end
 fprintf(figout,'\\beginpgfgraphicnamed{figure-%d-%d-%d}\n',n,p,round(t0*100));
 fprintf(figout,'\\begin{tikzpicture}\n');
 fprintf(figout,'  \\begin{axis}[ %%\n');
 fprintf(figout,'    remember picture, %%\n');
 fprintf(figout,'    name = plot1a, %%\n');
-fprintf(figout,'    scale only axis, %%\n');
-%fprintf(figout,'    clip mode = individual,%%\n');
 %fprintf(figout,'    set layers=axis on top,%%\n');
 fprintf(figout,'    scaled y ticks = false,%%\n');
-fprintf(figout,'    width=0.75\\textwidth,%%\n');
-fprintf(figout,'    height=0.22067\\textheight,%%\n');
+fprintf(figout,'    scale ticks below exponent ={-3},%%\n');
+if (type=='tal')	
+	%fprintf(figout,'    clip mode = individual,%%\n');
+	fprintf(figout,'    scale only axis, %%\n');
+	fprintf(figout,'    width=120mm,%%\n');
+	fprintf(figout,'    height=60mm,%%\n');
+	if (n==8)&&(p==7)&&(t0==0.025)
+		fprintf(figout,'    ytick = {0,1,2,4,6,8},%%\n');
+		fprintf(figout,'    yticklabels = {$0$,{\\color{white}$10^{-12}$},$2$,$4$,$6$,$8$},%%\n');
+	end
+else
+	fprintf(figout,'    scale only axis, %%\n');
+	fprintf(figout,'    width=0.75\\textwidth,%%\n');
+	fprintf(figout,'    height=0.22067\\textheight,%%\n');
+end
 fprintf(figout,'    xmin = %e, xmax = %e, %% change if needed\n', T(1), T(2));
-fprintf(figout,'    ymin = %e, ymax = %e, %%\n', 0, n);
+if (example==5)
+	fprintf(figout,'    ymin = %e, ymax = %e, %%\n', -10, 0);	
+	fprintf(figout,'    restrict y to domain=%d:%d, %%\n',-12,2);
+else	
+	fprintf(figout,'    ymin = %e, ymax = %e, %%\n', 0, n);
+	fprintf(figout,'    restrict y to domain=%d:%d, %%\n',-2,n+2);
+end
 fprintf(figout,'    restrict x to domain=%d:%d, %%\n', floor(T(1))-2, ceil(T(2))+2);
-fprintf(figout,'    restrict y to domain=%d:%d, %%\n',-2,n+2);
 fprintf(figout,'    xlabel = {$\\mu$},%%\n');
 fprintf(figout,'    ylabel = {Eigenvalues},%%\n');
 fprintf(figout,'    scaled ticks = false,%%\n');
 fprintf(figout,'    every axis y label/.style= {at={(ticklabel cs:0.5)},rotate=90,yshift=3pt},%%\n');
+fprintf(figout,'    tick label style={/pgf/number format/fixed},%%\n'); 
 fprintf(figout,'    axis on top, %%\n');
-fprintf(figout,'    every axis legend/.append style={ at={(0.00,1.05)}, anchor=south west,\n');
+if (type=='tal')	
+	fprintf(figout,'    every axis legend/.append style={ at={(0.00,1.02)}, anchor=south west,\n');
+else
+	fprintf(figout,'    every axis legend/.append style={ at={(0.00,1.05)}, anchor=south west,\n');
+end
 fprintf(figout,'      cells={anchor=west}, },%%\n');
 fprintf(figout,'    mark size = 2]\n\n');
+
+% draw \mu0
+fprintf(figout,'    \\draw[SPECgreen,thick] (axis cs:%e,%e) --',t0,0);
+fprintf(figout,'    (axis cs:%e,%e) node[midway, right]{$\\mu_{0}$};\n\n',t0,n);
+
 fprintf(figout,'	  \\addplot[SPECred, only marks, mark=+]\n');
 fprintf(figout,'    coordinates{%%\n');      
 
@@ -76,6 +107,14 @@ for kk = 1:npoints
 		case {3,113}
 			Ax(:,:) = diag(ones(n,1),0) + diag(ones(n-1,1),1);
 			Ax(n,1) = xx;
+			
+		case {5}
+			for ii = 1:n
+				for jj = 1:n
+					Ax(ii,jj) = (M{ii,jj}(xx)); 
+				end
+			end
+
 			
 	end
 	
@@ -141,22 +180,36 @@ fprintf(figout,'    remember picture, %%\n');
 fprintf(figout,'    name = plot1b, %%\n');
 fprintf(figout,'    at = {($(plot1a.north east)+(0.5cm,1cm)$)}, %%\n');
 fprintf(figout,'    anchor = north east, %%\n');
-fprintf(figout,'    scale only axis, %%\n');
-%fprintf(figout,'    clip mode = individual,%%\n');
 %fprintf(figout,'    set layers=axis on top,%%\n');
 fprintf(figout,'    scaled y ticks = false,%%\n');
-fprintf(figout,'    width=0.30\\textwidth,%%\n');
-fprintf(figout,'    height=0.14\\textheight,%%\n');
+if (type=='tal')
+	%fprintf(figout,'    clip mode = individual,%%\n');
+	fprintf(figout,'    scale only axis, %%\n');
+	fprintf(figout,'    width=50mm,%%\n');
+	fprintf(figout,'    height=40mm,%%\n');
+else
+	fprintf(figout,'    scale only axis, %%\n');
+	fprintf(figout,'    width=0.30\\textwidth,%%\n');
+	fprintf(figout,'    height=0.14\\textheight,%%\n');
+end
 fprintf(figout,'    xmin = %e, xmax = %e, %% change if needed\n', S(1), S(2));
 fprintf(figout,'    ymin = %d, ymax = %d, %%\n', S(3) ,S(4));
 fprintf(figout,'    scaled ticks = false,%%\n');
-fprintf(figout,'    y tick label style= {anchor=west,xshift=3pt},%%\n')
-fprintf(figout,'    ytick = {1.4}, %%\n')
-fprintf(figout,'    x tick label style= {anchor=south,yshift=3pt},%%\n')
-fprintf(figout,'    xtick = {0.2,0.4}, %%\n')
+fprintf(figout,'    y tick label style= {anchor=east,xshift=-3pt},%%\n');
+fprintf(figout,'    x tick label style= {anchor=north,yshift=-3pt},%%\n');
+fprintf(figout,'    tick label style={/pgf/number format/fixed},%%\n'); 
+if (type=='pap')
+	fprintf(figout,'    ytick = {1.4}, %%\n');
+	fprintf(figout,'    xtick = {0.2,0.4}, %%\n');
+end
 fprintf(figout,'    axis on top, %%\n');
 fprintf(figout,'    mark size = 2, %%\n');
 fprintf(figout,'	  axis background/.style = {fill=white,opacity = 1}]\n\n');
+
+% draw \mu0
+fprintf(figout,'    \\draw[SPECgreen,thick] (axis cs:%e,%e) --',t0,S(3));
+fprintf(figout,'    (axis cs:%e,%e);\n\n',t0,S(4));
+
 fprintf(figout,'	  \\addplot[SPECred, only marks, mark=+]\n');
 fprintf(figout,'    coordinates{%%\n');      
 
@@ -224,32 +277,38 @@ end
 fprintf(figout,'\\end{tikzpicture}%%\n');
 fprintf(figout,'\\endpgfgraphicnamed%%\n');
 
+if (type=='pap')
 
-if (taylor)
-	fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $\\mu_{0}=%3.2f$.}%%\n',example,n,t0);
-else
-	fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $[\\mu_{1},\\mu_{2}]=[%3.2f,%3.2f]$.}%%\n',example,n,T2(1),T2(2));
-end
-
-if (taylor)
-	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
+	if (taylor)
+		fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $\\mu_{0}=%3.2f$.}%%\n',example,n,t0);
 	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
-	end		
-else	
-	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
-	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
-	end		
-end
+		fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $[\\mu_{1},\\mu_{2}]=[%3.2f,%3.2f]$.}%%\n',example,n,T2(1),T2(2));
+	end
+	
+	if (taylor)
+		if (usevpa)||(usesingle)
+			fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
+		else
+			fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
+		end		
+	else	
+		if (usevpa)||(usesingle)
+			fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
+		else
+			fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
+		end		
+	end
 
 fprintf(figout,'\\end{figure}\n\n\n');
+end
 fprintf(figout,'%%%% Thomas'' emacs local variable set up\n\n');
 fprintf(figout,'%%%%%% Local Variables:\n'); 
 fprintf(figout,'%%%%%% mode: LaTeX\n');
-fprintf(figout,'%%%%%% TeX-master: "pevp2"\n');
+if (type=='tal')
+	fprintf(figout,'%%%%%% TeX-master: "parametric_evp"\n');
+else
+	fprintf(figout,'%%%%%% TeX-master: "pevp2"\n');
+end
 fprintf(figout,'%%%%%% TeX-PDF-mode:t\n');
 fprintf(figout,'%%%%%% TeX-engine: luatex\n');
 fprintf(figout,'%%%%%% auto-fill-function:nil\n');

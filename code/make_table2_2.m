@@ -1,7 +1,9 @@
+fprintf('Running maketable2_2.m; type: %s\n',type);
+
 if (usevpa)
-	filename = sprintf('exp_pap_table41_%d_%d_%f_%d_vpa.tex',n,p,t0,example);
+	filename = sprintf('exp_%s_table41_%d_%d_%f_%d_vpa.tex',type,n,p,t0,example);
 else
-	filename = sprintf('exp_pap_table41_%d_%d_%f_%d.tex',n,p,t0,example);
+	filename = sprintf('exp_%s_table41_%d_%d_%f_%d.tex',type,n,p,t0,example);
 end
 
 figout = fopen(filename,'w');

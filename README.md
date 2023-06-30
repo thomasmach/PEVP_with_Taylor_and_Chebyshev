@@ -34,4 +34,15 @@ scrip
 generate_all_data_for_all_figures.m
 ```
 
+
+* Melina A. Freitag , Pavel Kríž , Thomas Mach, and Jan Martin Nicolaus: Can one
+hear the depth of the water?]{Can one hear the depth of the water?
+
+The data is generated with the script
+```
+experiments_pamm.m
+```
+
+
+
 ## Installation
