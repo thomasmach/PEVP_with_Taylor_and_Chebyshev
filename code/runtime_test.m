@@ -33,8 +33,8 @@ end
 
 
 
-NN = [8,16,32,64,128,256,8,16,32,64,128,256,8,8,8,8,8,8];
-PP = [2,2,2,2,2,2,7,7,7,7,7,7,2,4,8,16,32,64];
+NN = [8,16,32,64,128,256,512,1024,2048,4096,8,16,32,64,128,256,512,1024,2048,4096,8,8,8,8,8,8,8,8,8,8];
+PP = [2,2,2,2,2,2,2,2,2,2,7,7,7,7,7,7,7,7,7,7,2,4,8,16,32,64,1,1,1,1];
 lNN = length(NN)
 
 for in = 1:lNN
@@ -71,16 +71,26 @@ for in = 1:lNN
 			
 	time_generating_or_computing_A = toc
 
+	if (n<1000)
+		nrccurrent = nrc;
+	else
+		if (n<2000)
+			nrccurrent = 2;
+		else
+			nrccurrent = 1;
+		end
+	end
+	
 	% compute Taylor approximation
 	tic
 	
-	for rc=1:nrc
+	for rc=1:nrccurrent
 		[dp,vp] = taylor_evp(A,p,pA,usesingle);
 	end
 	
 	time_taylor = toc
 
-	time(in) = time_taylor/nrc;
+	time(in) = time_taylor/nrccurrent;
 	
 
 end

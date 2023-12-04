@@ -41,7 +41,9 @@ end
 % set ind_eigenv if not set
 if (~exist('ind_eigenv','var'))
 	ind_eigenv = 1:n;
-	len = length(ind_eigenv)
+	len = length(ind_eigenv);
+else
+	len = length(ind_eigenv);
 end
 
 

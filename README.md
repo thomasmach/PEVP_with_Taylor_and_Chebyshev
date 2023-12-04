@@ -13,7 +13,7 @@ with A(mu) given. The code computes approximations for eigenpairs (lambda(mu),v(
 
 The code was tested with MATLAB R2020b and R2021b in combination with the latest
 release of Chebfun (v.5.7.0). The Chebfun package is
-[available on github at https://github.com/chebfun/chebfun](https://github.com/chebfun/chebfu.n).
+[available on github at https://github.com/chebfun/chebfun](https://github.com/chebfun/chebfun).
 Chebfun is used to represent the matrix A(mu) in some of the examples.
 
 

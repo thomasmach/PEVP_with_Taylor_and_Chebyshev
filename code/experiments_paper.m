@@ -62,6 +62,8 @@ T2 = [1/4,1];
 % 9  like 1 but example 3 mu = -0.2
 % 10 like 1 but example 3 mu = 0.2
 
+clear ind_eigenv;
+
 switch select
 	case {1}
 		% proof-of-concept Taylor and Table sum to 8
@@ -102,6 +104,27 @@ switch select
 		example = 1;
 		% parameter expansion point (Taylor approximation)
 		t0 = 0.2;		
+
+		% quality approximation with increasing degree
+	case {2002}
+		floats = [3];
+
+		n = 1000;
+		p = 26;
+		% parameter interval
+		T = [0, 0.5];		
+		% parameter figures
+		S = [0.01,0.4,1e-16,1e-12];
+		usevpa = false;
+		usesingle = false;
+
+		taylor = true;
+		
+		example = 1;
+		% parameter expansion point (Taylor approximation)
+		t0 = 0.2;	
+		
+		ind_eigenv = 1:5;
 
 		% quality approximation with increasing degree --- single precision
 	case {3}
@@ -485,7 +508,9 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+if (~exist('ind_eigenv','var'))
+	ind_eigenv = 1:n;
+end
 
 if (~exist('output','var'))
 	output = true;
@@ -560,7 +585,7 @@ switch example
 			for jj=1:ii-2
 				M{ii,jj}=null;
 			end
-			for jj=max(ii-1,1):min(ii+1,n)
+			for jj=max(ii-1,1):min(ii+1,n)o
 				h = chebfun(@(mu) K(ii,jj)/mu, T2, 'vectorize','splitting','on');
 				M{ii,jj} = h;             
 			end
@@ -779,7 +804,7 @@ elseif (taylor)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Taylor approximation
 
-	[dp,vp] = taylor_evp(A,p,pA,usesingle);
+	[dp,vp] = taylor_evp(A,p,pA,usesingle,ind_eigenv);
 	
 else
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

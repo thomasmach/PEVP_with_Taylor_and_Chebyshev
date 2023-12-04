@@ -82,6 +82,8 @@ switch select
 		% hidden parameter to be uncovered
 		mu_hidden = 3.2;
 
+		noise_eps = 1e-5;
+
 	case {2}
 		% eigenvalues vs approximation
 		floats = [3,21];
@@ -255,7 +257,9 @@ switch example
 		
 		for ii = 1:n2
 			% K stiffness matrix (2,1) block = -K
-			M{n2+ii,ii+1} = eins;             
+			if (ii<n2)
+				M{n2+ii,ii+1} = eins;
+			end
 			M{n2+ii,ii} = -zwei;             
 			if (ii>1)
 				M{n2+ii,ii-1} = eins;
