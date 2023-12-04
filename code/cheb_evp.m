@@ -24,7 +24,7 @@ function [dp,vp] = cheb_evp(A,md,newtonsteps,mdA,usesingle)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % initialization
-[m,n,o]=size(A);
+[m,n,o]=size(A)
 % check size of A
 assert(mdA==o);
 assert(m==n);
@@ -66,6 +66,9 @@ z = zeros((n+1)*md,len);
 % 0th approximation
 [U,T] = schur(A(:,:,1));
 [V,D0] = eig(T);
+
+V
+D0
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % copy 0th approximation 

@@ -6,8 +6,8 @@
 addpath('~/git/chebfun')
 
 
-% type of experiments, the ones for the paper
-type = 'pap';
+% type of experiments, the ones for the talk
+type = 'tal';
 
 % selects different sets of parameters for different  numerical experiments
 if (~exist('select','var'))
@@ -17,14 +17,14 @@ end
 % Table Select
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % select   floats            filenames      method                   example
-% 1          Fig 2.1           fig41          Taylor                   1 ... 2.3  
-%            Table 2.1         tab41          Taylor                   1
-% 2          Fig 2.2           fig52          Taylor                   1 
-% 3          Fig 2.3           fig53          Taylor                   1
+% 1        slide 7 & 10        fig41          Taylor                   1 ... 2.3  
+%                              tab41          Taylor                   1
+% 2        slide 11            fig52          Taylor                   1 
+% 3        slide 11            fig53          Taylor                   1
 % 4          Fig 3.1           fig52_cheb     Chebyshev                1
 % **** Fig 4.1 (sketch of the springs and masses) not a Matlab figure  1
-% 5          Fig 4.2 (half)    fig61          Taylor                   2 ... 4.1
-% 6          Fig 4.3           fig62          Taylor                   2   
+% 5        slide 15            fig61          Taylor                   2 ... 4.1
+% 6        slide 16            fig62          Taylor                   2   
 % 7          Fig 4.2 (half)    fig61_cheb     Chebyshev                2
 % 57         Fig 4.2 (both)    fig61_both     Taylor and Chebyshev     2
 % 8          Fig 4.4           fig62_cheb     Chebyshev                2  
@@ -41,10 +41,13 @@ end
 % 101        -------not used in paper-----    Taylor                   4 ... ???
 % for Fig 4.12, 4.13, 4.14 use experiments_sampling_2.m
 % 41         -------not used in paper-----    Chebyshev                1
-
+% 1001     slide 24            fig81          Chebyshev                1
+% 2001     slide 24            fig81          Chebyshev                1
 
 usevpa = false;
 chebyshev = false;
+fnns = false;
+taylor = false;
 
 % parameter interval (Chebyshev approximation)
 T2 = [1/4,1];
@@ -62,8 +65,6 @@ T2 = [1/4,1];
 % 9  like 1 but example 3 mu = -0.2
 % 10 like 1 but example 3 mu = 0.2
 
-clear ind_eigenv;
-
 switch select
 	case {1}
 		% proof-of-concept Taylor and Table sum to 8
@@ -72,9 +73,9 @@ switch select
 		n = 8;
 		p = 7;
 		% parameter interval (plotting)
-		T = [0, 1.5];
+		T = [0, 0.25];
 		% parameter figure magnifying
-		S = [0.1,0.5,1,1.5];
+		S = [0.01,0.07,0.8,2.1];
 
 		usevpa = false;
 		usesingle = false;
@@ -84,7 +85,7 @@ switch select
 		example = 1;
 
 		% parameter expansion point (Taylor approximation)
-		t0 = 0.2;		
+		t0 = 0.025;		
 		
 		% quality approximation with increasing degree
 	case {2}
@@ -93,9 +94,9 @@ switch select
 		n = 8;
 		p = 26;
 		% parameter interval
-		T = [0, 1.5];		
+		T = [0, 0.25];		
 		% parameter figures
-		S = [0.01,0.4,1e-16,1e-12];
+		S = [0.00,0.05,1e-17,1e-11];
 		usevpa = false;
 		usesingle = false;
 
@@ -103,45 +104,26 @@ switch select
 		
 		example = 1;
 		% parameter expansion point (Taylor approximation)
-		t0 = 0.2;		
-
-		% quality approximation with increasing degree
-	case {2002}
-		floats = [3];
-
-		n = 1000;
-		p = 26;
-		% parameter interval
-		T = [0, 0.5];		
-		% parameter figures
-		S = [0.01,0.4,1e-16,1e-12];
-		usevpa = false;
-		usesingle = false;
-
-		taylor = true;
-		
-		example = 1;
-		% parameter expansion point (Taylor approximation)
-		t0 = 0.2;	
-		
-		ind_eigenv = 1:5;
+		t0 = 0.025;		
 
 		% quality approximation with increasing degree --- single precision
 	case {3}
 		floats = [3];
 
 		n = 8;
-		p = 18;
+		p = 23;
 		% parameter interval
-		T = [0, 1.5];		
+		T = [0, 0.25];		
 		% parameter figures
-		S = [0.01,0.4,1e-8,1e-4];
+		S = [0.0,0.05,1e-10,1e-4];
 		usevpa = false;
 		usesingle = true;
 		
 		taylor = true;
 		
 		example = 1;
+		% parameter expansion point (Taylor approximation)
+		t0 = 0.025;		
 
 		% quality approximation with increasing degree Chebyshev
 	case {4}
@@ -229,7 +211,7 @@ switch select
 		% parameter interval
 		T = [0.1, 1.6];		
 		% parameter figures
-		S = [0.5,1.0,1e-16,1e-12];
+		S = [0.5,1.0,1e-15,1e-11];
  		y_lim = [0, 2];
  		usevpa = false;
  		usesingle = false;
@@ -504,13 +486,57 @@ switch select
 		baart_r = 0.8; 
 		
 
+	case {1000,1001,1002,1003,1004,1005,1006,1007,1008,1009}
+		floats = [3];
+
+		n = 8;
+		p = 25;
+		% parameter interval
+		T = [0, 0.25];		
+		% parameter figures
+		S = [42,42,42,42];
+		usevpa = false;
+		usesingle = false;
+
+		taylor = false;
+		chebyshev = true;
+		
+		example = 1;
+		% parameter expansion point (Taylor approximation)
+		T2 = [0.01,0.1];
+		t0 = 0.05;
+
+		fnns = true;
+		newtonsteps = select - 1000; 
+		
+	case {2000,2001,2002,2003,2004,2005,2006,2007,2008,2009}
+		floats = [3];
+
+		n = 8;
+		p = 40;
+		% parameter interval
+		T = [0, 0.25];		
+		% parameter figures
+		S = [42,42,42,42];
+		usevpa = false;
+		usesingle = false;
+
+		taylor = false;
+		chebyshev = true;
+		
+		example = 1;
+		% parameter expansion point (Taylor approximation)
+		T2 = [0.01,0.1];
+		t0 = 0.05;
+
+		fnns = true;
+		newtonsteps = select - 2000; 
+		
 end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if (~exist('ind_eigenv','var'))
-	ind_eigenv = 1:n;
-end
+
 
 if (~exist('output','var'))
 	output = true;
@@ -568,7 +594,8 @@ switch example
 	for ii = 1:n
 		for jj = 1:n
 			% sqrt is a different kernel than the standard Gaussian kernel
-			U(ii,jj) = sqrt((P(ii,:)-P(jj,:))*transpose(P(ii,:)-P(jj,:)));
+			% U(ii,jj) = sqrt((P(ii,:)-P(jj,:))*transpose(P(ii,:)-P(jj,:)));
+			U(ii,jj) = (P(ii,:)-P(jj,:))*transpose(P(ii,:)-P(jj,:));
 			h = chebfun(@(mu) exp(-(mu)*U(ii,jj)), T2, 'vectorize','splitting','on');
 			% M = exp(-\mu U) \neq expm(U)
 			M{ii,jj} = h;             
@@ -585,7 +612,7 @@ switch example
 			for jj=1:ii-2
 				M{ii,jj}=null;
 			end
-			for jj=max(ii-1,1):min(ii+1,n)o
+			for jj=max(ii-1,1):min(ii+1,n)
 				h = chebfun(@(mu) K(ii,jj)/mu, T2, 'vectorize','splitting','on');
 				M{ii,jj} = h;             
 			end
@@ -795,7 +822,7 @@ tic
 if (taylor && chebyshev)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Taylor and Chebyshev approximation
-fprintf('here\n')
+	fprintf('here\n')
 
 	[dp,vp] = taylor_evp(A,p,pA,usesingle);
 	[dpc,vpc] = cheb_evp(Ac,p,newtonsteps,pA,usesingle);
@@ -804,7 +831,7 @@ elseif (taylor)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% Taylor approximation
 
-	[dp,vp] = taylor_evp(A,p,pA,usesingle,ind_eigenv);
+	[dp,vp] = taylor_evp(A,p,pA,usesingle);
 	
 else
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -188,26 +188,33 @@ for ii=1:n
 	el = zeros(1,n); 
 	el(ii) = 1;
 	
+
+	% Taylor
 	fprintf(figout,'    \\addplot[SPECblue, thick]\n');
 	fprintf(figout,'    coordinates{%%\n');
-	
+
 	for kk = minkk:maxkk
 		
-		if (taylor)
-			if ((el*horner_f(xl(kk),t0,dp(:,1:p))<=S(4)) && (el*horner_f(xl(kk),t0,dp(:,1:p))>=S(3)))||(kk==minkk)			
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*horner_f(xl(kk),t0,dp(:,1:p)));
-			
-			end				
-			
-		else
-			
-			if ((el*fp{p}(xl(kk))<=S(4)) && (el*fp{p}(xl(kk))>=S(3)))||(kk==minkk)
-				fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*fp{p}(xl(kk)));
-				
-			end
-		end
+		if ((el*horner_f(xl(kk),t0,dp(:,1:p))<=S(4)) && (el*horner_f(xl(kk),t0,dp(:,1:p))>=S(3)))||(kk==minkk)			
+			fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*horner_f(xl(kk),t0,dp(:,1:p)));
+		end				
+	
 	end			
 	fprintf(figout,'    };\n\n');
+	
+	
+	% Chebyshev
+	fprintf(figout,'    \\addplot[SPECorange, thick]\n');
+	fprintf(figout,'    coordinates{%%\n');
+	for kk = minkk:maxkk
+		
+		if ((el*fp{p}(xl(kk))<=S(4)) && (el*fp{p}(xl(kk))>=S(3)))||(kk==minkk)
+			fprintf(figout,'    (%e,%e)%%\n',xl(kk),el*fp{p}(xl(kk)));
+		end
+	
+	end			
+	fprintf(figout,'    };\n\n');	
+
 end
 fprintf(figout,'	\\end{axis}%%\n');
 
@@ -220,25 +227,14 @@ fprintf(figout,'\\end{tikzpicture}%%\n');
 fprintf(figout,'\\endpgfgraphicnamed%%\n');
 
 
-if (taylor)
-	fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $\\mu_{0}=%3.2f$.}%%\n',example,n,t0);
-else
-	fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $[\\mu_{1},\\mu_{2}]=[%3.2f,%3.2f]$.}%%\n',example,n,T2(1),T2(2));
-end
+fprintf(figout,'\\caption{Example~\\ref{example:%d}, $n=%d$, $\\mu_{0}=%3.2f$ and $[\\mu_{1},\\mu_{2}]=[%3.2f,%3.2f]$, respectively.}%%\n',example,n,t0,T2(1),T2(2));
 
-if (taylor)
-	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
-	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
-	end		
-else	
-	if (usevpa)||(usesingle)
-		fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
-	else
-		fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,T2(1),example);
-	end		
-end
+
+if (usevpa)||(usesingle)
+	fprintf(figout,'\\label{fig:example1vpa_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
+else
+	fprintf(figout,'\\label{fig:example1_%d_%d_%d_%3.2f_%d}%%\n',taylor,n,p,t0,example);
+end		
 
 fprintf(figout,'\\end{figure}\n\n\n');
 fprintf(figout,'%%%% Thomas'' emacs local variable set up\n\n');

@@ -41,7 +41,9 @@ end
 % set ind_eigenv if not set
 if (~exist('ind_eigenv','var'))
 	ind_eigenv = 1:n;
-	len = length(ind_eigenv)
+	len = length(ind_eigenv);
+else
+	len = length(ind_eigenv);
 end
 
 
@@ -99,11 +101,14 @@ for ii = 1:len
 		yp = zeros(n,1);
 		lp = zeros(1,1);
 		for ll = 1:kk-1
-			yp = yp + nchoosek(kk-1,ll-1)*A(:,:,kk+1-ll)*vp(:,ii,ll);
+			% yp = yp + nchoosek(kk-1,ll-1)*A(:,:,kk+1-ll)*vp(:,ii,ll);
+			yp = yp + A(:,:,kk+1-ll)*vp(:,ii,ll);
 			if (ll>1)
-				yp = yp - nchoosek(kk-1,ll-1)*vp(:,ii,kk+1-ll)*diag(dp(ii,ll));
+				% yp = yp - nchoosek(kk-1,ll-1)*vp(:,ii,kk+1-ll)*diag(dp(ii,ll));
+				yp = yp - vp(:,ii,kk+1-ll)*diag(dp(ii,ll));
 				if (ll<kk-1)
-					lp = lp + diag(nchoosek(kk-1,ll-1)*vp(:,ii,kk+1-ll)'*vp(:,ii,ll));
+					%	lp = lp + diag(nchoosek(kk-1,ll-1)*vp(:,ii,kk+1-ll)'*vp(:,ii,ll));
+					lp = lp + diag(vp(:,ii,kk+1-ll)'*vp(:,ii,ll));
 				end
 			end
 		end
