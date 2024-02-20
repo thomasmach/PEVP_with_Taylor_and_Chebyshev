@@ -72,9 +72,9 @@ switch select
 		n = 8;
 		p = 7;
 		% parameter interval (plotting)
-		T = [0, 1.5];
+		T = [0, 0.75];
 		% parameter figure magnifying
-		S = [0.1,0.5,1,1.5];
+		S = [0.1,0.5,0.75,1.5];
 
 		usevpa = false;
 		usesingle = false;
@@ -516,8 +516,11 @@ if (~exist('output','var'))
 	output = true;
 end
 
-npoints = 151;
-
+if (T(2)-T(1)<1)
+	npoints = 76;
+else
+	npoints = 151;
+end;
 % points
 r1 = 5; % big radius torus
 r2 = 1; % small radius torus

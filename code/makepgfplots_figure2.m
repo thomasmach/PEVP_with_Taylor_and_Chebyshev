@@ -97,17 +97,18 @@ for kk = 1:npoints
 
 	end
 	e = eig(Ax);
+	e = sort(e,'descend');
 	%plot(xx*ones(n,1),e,'r+');
 	if (taylor)
 
 		for ll = 1:p
-			zzz(kk,ll) = norm(sort(e)-sort(horner_f(xx,t0,dp(:,1:ll))));
+			zzz(kk,ll) = norm(e(ind_eigenv)-sort(horner_f(xx,t0,dp(:,1:ll)),'descend'));
 		end
 	
 	else
 		
 		for ll = 1:p
-			zzz(kk,ll) = norm(sort(e)-sort(fp{ll}(xx)));
+			zzz(kk,ll) = norm(e(ind_eigenv)-sort(fp{ll}(xx),'descend'));
 % 			for tt = 1:n
 % 				et = zeros(n,1);
 % 				et(tt) = 1;

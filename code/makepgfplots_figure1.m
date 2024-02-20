@@ -60,7 +60,7 @@ if (type=='tal')
 	end
 else
 	fprintf(figout,'    scale only axis, %%\n');
-	fprintf(figout,'    width=0.75\\textwidth,%%\n');
+	fprintf(figout,'    width=0.87\\textwidth,%%\n');
 	fprintf(figout,'    height=0.22067\\textheight,%%\n');
 end
 fprintf(figout,'    xmin = %e, xmax = %e, %% change if needed\n', T(1), T(2));
@@ -154,7 +154,7 @@ end
 
 if (S ~= [42,42,42,42])
 	fprintf(figout,'\n\n');		
-	fprintf(figout,'    \\draw (axis cs:%e,%e)coordinate(plot1all) -- ',S(1),S(3));
+	fprintf(figout,'    \\draw[thick] (axis cs:%e,%e)coordinate(plot1all) -- ',S(1),S(3));
 	fprintf(figout,'(axis cs:%e,%e)coordinate(plot1alr) -- ',S(2),S(3));
 	fprintf(figout,'(axis cs: %e,%e)coordinate(plot1aur) --',S(2),S(4)); 
 	fprintf(figout,'(axis cs: %e,%e)coordinate(plot1aul) -- cycle; %%\n',S(1),S(4));
@@ -178,7 +178,7 @@ if (S ~= [42,42,42,42])
 fprintf(figout,'  \\begin{axis}[ %%\n');
 fprintf(figout,'    remember picture, %%\n');
 fprintf(figout,'    name = plot1b, %%\n');
-fprintf(figout,'    at = {($(plot1a.north east)+(0.5cm,1cm)$)}, %%\n');
+fprintf(figout,'    at = {($(plot1a.north east)+(0.5cm,1.5cm)$)}, %%\n');
 fprintf(figout,'    anchor = north east, %%\n');
 %fprintf(figout,'    set layers=axis on top,%%\n');
 fprintf(figout,'    scaled y ticks = false,%%\n');
@@ -190,7 +190,7 @@ if (type=='tal')
 else
 	fprintf(figout,'    scale only axis, %%\n');
 	fprintf(figout,'    width=0.30\\textwidth,%%\n');
-	fprintf(figout,'    height=0.14\\textheight,%%\n');
+	fprintf(figout,'    height=0.20\\textheight,%%\n');
 end
 fprintf(figout,'    xmin = %e, xmax = %e, %% change if needed\n', S(1), S(2));
 fprintf(figout,'    ymin = %d, ymax = %d, %%\n', S(3) ,S(4));
@@ -199,7 +199,7 @@ fprintf(figout,'    y tick label style= {anchor=east,xshift=-3pt},%%\n');
 fprintf(figout,'    x tick label style= {anchor=north,yshift=-3pt},%%\n');
 fprintf(figout,'    tick label style={/pgf/number format/fixed},%%\n'); 
 if (type=='pap')
-	fprintf(figout,'    ytick = {1.4}, %%\n');
+	fprintf(figout,'    ytick = {0.8,1.0,1.2,1.4}, %%\n');
 	fprintf(figout,'    xtick = {0.2,0.4}, %%\n');
 end
 fprintf(figout,'    axis on top, %%\n');
@@ -270,8 +270,8 @@ end
 fprintf(figout,'	\\end{axis}%%\n');
 
 
-fprintf(figout,'	\\draw (current axis.north west)--(plot1aul); %%\n');
-fprintf(figout,'	\\draw (current axis.south east)--(plot1alr); %%\n');
+fprintf(figout,'	\\draw[thick] (current axis.north west)--(plot1aul); %%\n');
+fprintf(figout,'	\\draw[thick] (current axis.south east)--(plot1alr); %%\n');
 end
 
 fprintf(figout,'\\end{tikzpicture}%%\n');
